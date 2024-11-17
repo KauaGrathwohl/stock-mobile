@@ -1,1 +1,1 @@
-# StockSense mobile Application
+# StockSense mobile application
