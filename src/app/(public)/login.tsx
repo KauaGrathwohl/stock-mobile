@@ -80,10 +80,10 @@ export default function Login () {
                 title="Entrar"
                 onPress={handleSubmit(onSubmit)}
             />
-            <Button
+            {/* <Button
                 title="Criar nova conta"
                 onPress={() => router.replace('/register' as any)}
-            />
+            /> */}
         </View>
     )
 }

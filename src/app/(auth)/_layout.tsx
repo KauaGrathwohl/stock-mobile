@@ -1,9 +1,8 @@
 import { Stack } from 'expo-router';
+import Routes from '../routes';
 
 export default function AuthLayout() {
     return (
-        <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name='home' />
-        </Stack>
+        <Routes/>
     );
 }
