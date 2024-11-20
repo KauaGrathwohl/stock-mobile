@@ -11,6 +11,7 @@ export default function TabRoutes() {
     return (
         <Tab.Navigator screenOptions={{
             tabBarActiveTintColor: '#000',
+            headerShown: false
         }}>
             <Tab.Screen
                 name="Home"

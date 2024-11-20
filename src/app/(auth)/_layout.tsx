@@ -1,4 +1,3 @@
-import { Stack } from 'expo-router';
 import Routes from '../routes';
 
 export default function AuthLayout() {
