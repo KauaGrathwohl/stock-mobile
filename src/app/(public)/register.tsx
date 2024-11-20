@@ -3,31 +3,33 @@ import { Input } from "@/src/components/Input";
 import { useAuth } from "@/src/hooks/useAuth";
 import { useFetch } from "@/src/hooks/useFetch";
 import { Auth } from "@/src/interfaces/api";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
 
 const schema = z.object({
+    nome: z.string(),
     email: z.string().email({ message: 'Email inválido' }),
-    senha: z.string()
+    senha: z.string(),
+    cpf: z.string()
 });
 
-type SignInFormSchema = z.infer<typeof schema>;
+type RegisterFormSchema = z.infer<typeof schema>;
 
-export default function SignIn () {
+export default function Register () {
     const auth = useAuth();
     const [authResponse, authFetchData] = useFetch();
-    const { control, handleSubmit, formState: { errors } } = useForm<SignInFormSchema>({
+    const { control, handleSubmit, formState: { errors } } = useForm<RegisterFormSchema>({
         resolver: zodResolver(schema),
     });
 
-    const onSubmit = async (data: SignInFormSchema) => {
+    const onSubmit = async (data: RegisterFormSchema) => {
         const body = JSON.stringify(data);
         const headers = { 'Content-Type': 'application/json' };
-        await authFetchData('auth', { body, headers, method: 'POST' });  
+        await authFetchData('usuarios', { body, headers, method: 'POST' });  
         
         console.log(authResponse, 'authResponse.data', )
     };
@@ -35,14 +37,28 @@ export default function SignIn () {
     useEffect(() => {
         if (authResponse.data){
             auth?.login(authResponse?.data as Auth);        
-            router.navigate('(auth)' as any);
+            router.replace('/home' as any);
         }
-    }, [authResponse.data, auth, router.navigate])
+    }, [authResponse.data, auth, router.replace])
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>StockSense</Text>
-            <Text style={styles.text}>Bem-vindo!</Text>
+            <Text style={styles.text}>Crie sua conta!</Text>
+            <Controller
+                control={control}
+                name="nome"
+                render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                        label="Nome"
+                        placeholder="Digite seu nome"
+                        keyboardType='default'
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                    />
+                )}
+            />
             <Controller
                 control={control}
                 name="email"
@@ -71,14 +87,27 @@ export default function SignIn () {
                     />
                 )}
             />
-
+            <Controller
+                control={control}
+                name="cpf"
+                render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                        label="CPF"
+                        placeholder="Digite seu CPF"
+                        keyboardType="default"
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                    />
+                )}
+            />
             <Button
-                title="Entrar"
+                title="Cadastrar"
                 onPress={handleSubmit(onSubmit)}
             />
             <Button
-                title="Criar nova conta"
-                onPress={() => router.navigate('(public)/sign-up' as any)}
+                title="Já possuo uma conta"
+                onPress={() => router.replace('/login' as any)}
             />
         </View>
     )

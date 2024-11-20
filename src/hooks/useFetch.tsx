@@ -21,10 +21,8 @@ export const useFetch = <T,>() => {
   const fetchData = async (url: string, fetchOptions?: FetchOptions) => {
     setResponse((prevState) => ({ ...prevState, isLoading: true }));
 
-    const apiUrl = `${process.env.EXPO_PUBLIC_API_URL}/${url}`;
-
     try {
-      const res = await fetch(apiUrl, fetchOptions);
+      const res = await fetch(url, fetchOptions);
       if (!res.ok) throw new Error('Network response was not ok');
       const data = await res.json();
       setResponse({ data, error: null, isLoading: false });

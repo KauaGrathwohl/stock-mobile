@@ -1,4 +1,4 @@
-import { Stack, useRouter } from 'expo-router';
+import { Slot, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { AuthProvider } from '../providers/AuthProvider';
@@ -9,7 +9,7 @@ function ProtectedLayout({ children }: { children: React.ReactNode }) {
   
     useEffect(() => {
       if (!isAuthenticated) {
-        router.navigate('(public)' as any);
+        router.replace('/login');
       }
     }, [isAuthenticated]);
   
@@ -20,7 +20,7 @@ export default function RootLayout () {
     return (
       <AuthProvider>
         <ProtectedLayout>
-          <Stack screenOptions={{ headerShown: false }} />
+          <Slot/>
         </ProtectedLayout>
       </AuthProvider>
     )
