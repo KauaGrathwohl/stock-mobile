@@ -2,12 +2,12 @@
 import { useAuth } from '@/src/hooks/useAuth';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function Products() {
+export default function Suppliers() {
     const auth = useAuth();;
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Produtos!</Text>
+            <Text style={styles.title}>Fornecedores!</Text>
         </View>
     )
 }

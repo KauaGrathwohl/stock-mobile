@@ -1,7 +1,7 @@
-import DrawerRoutes from "./drawer.routes";
+import StackRoutes from "./stack.routes";
 
 export default function Routes() {
     return (
-        <DrawerRoutes />
+        <StackRoutes />
     )
 }

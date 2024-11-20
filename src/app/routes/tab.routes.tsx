@@ -4,6 +4,7 @@ import Home from '../(auth)/home';
 import Stock from '../(auth)/stock';
 import Profile from '../(auth)/profile';
 import { Feather } from '@expo/vector-icons';
+import StockFlow from '../(auth)/stockFlow';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,11 +23,11 @@ export default function TabRoutes() {
                 }}
             />
             <Tab.Screen
-                name="Stock"
-                component={Stock}
+                name="StockFlow"
+                component={StockFlow}
                 options={{
-                    tabBarIcon: ({ color, size }) => <Feather name='box' color={color} size={size}/>,
-                    tabBarLabel: 'Stock'
+                    tabBarIcon: ({ color, size }) => <Feather name='move' color={color} size={size}/>,
+                    tabBarLabel: 'Stock Flow'
                 }}
             />
             <Tab.Screen

@@ -2,12 +2,12 @@
 import { useAuth } from '@/src/hooks/useAuth';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function Products() {
-    const auth = useAuth();;
+export default function StockFlow() {
+    const auth = useAuth();
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Produtos!</Text>
+            <Text style={styles.title}>Entradas e saídas de lote!</Text>
         </View>
     )
 }

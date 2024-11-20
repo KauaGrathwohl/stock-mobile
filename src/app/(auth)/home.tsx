@@ -1,7 +1,5 @@
 
-import { Button } from '@/src/components/Button';
 import { useAuth } from '@/src/hooks/useAuth';
-import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function Home() {
@@ -10,15 +8,6 @@ export default function Home() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Olá, Usuário!</Text>
-            <Button
-                title="Sair"
-                onPress={
-                    () => {
-                        auth.logout();
-                        router.replace('/login' as any);
-                    }
-                } 
-            />
         </View>
     )
 }

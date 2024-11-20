@@ -1,13 +1,15 @@
 
+import { Button } from '@/src/components/Button';
 import { useAuth } from '@/src/hooks/useAuth';
+import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function Products() {
+export default function Categories() {
     const auth = useAuth();;
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Produtos!</Text>
+            <Text style={styles.title}>Categorias!</Text>
         </View>
     )
 }
