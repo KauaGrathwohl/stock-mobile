@@ -30,8 +30,6 @@ export default function Register () {
         const body = JSON.stringify(data);
         const headers = { 'Content-Type': 'application/json' };
         await authFetchData('usuarios', { body, headers, method: 'POST' });  
-        
-        console.log(authResponse, 'authResponse.data', )
     };
 
     useEffect(() => {

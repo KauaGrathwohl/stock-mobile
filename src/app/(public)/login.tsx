@@ -36,7 +36,6 @@ export default function Login () {
     };
 
     useEffect(() => {
-        console.log('authResponse =>', authResponse)
         if (authResponse.data){
             auth?.login(authResponse?.data as Auth);        
             router.replace('/home');

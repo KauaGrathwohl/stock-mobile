@@ -5,11 +5,26 @@ import TabRoutes from './tab.routes';
 import Products from '../(auth)/products';
 import Categories from '../(auth)/categories';
 import Suppliers from '../(auth)/suppliers';
-import { Text, TouchableOpacity, View } from 'react-native';
+import Stock from '../(auth)/stock';
 
 import { useAuth } from '@/src/hooks/useAuth';
 import { router } from 'expo-router';
-import Stock from '../(auth)/stock';
+
+type DrawerMenuItem = {
+    name: string;
+    label: string;
+    title?: string;
+    Icon?: any;
+    component?: any;
+};
+
+const menuItems: Array<DrawerMenuItem> = [
+    { name: "TabRoutes", label: "Home", Icon: 'home', component: TabRoutes },
+    { name: "Products", label: "Products", Icon: 'box', component: Products },
+    { name: "Categories", label: "Categories", Icon: 'list', component: Categories },
+    { name: "Suppliers", label: "Suppliers", Icon: 'users', component: Suppliers },
+    { name: "Stock", label: "Stock", Icon: 'archive', component: Stock }
+];
 
 const Drawer = createDrawerNavigator();
 
@@ -27,51 +42,21 @@ export default function DrawerRoutes() {
                 drawerActiveTintColor: '#000',
                 headerTitle: ''
             }}
-
             drawerContent={(props) => (
                 <CustomDrawerContent {...props} onLogout={handleLogout} />
             )}
         >
-            <Drawer.Screen
-                name="TabRoutes"
-                component={TabRoutes}
-                options={{
-                    drawerIcon: ({ color, size }) => <Feather name='home' color={color} size={size}/>,
-                    drawerLabel: 'Home'
-                }}
-            />
-            <Drawer.Screen
-                name="Stock"
-                component={Stock}
-                options={{
-                    drawerIcon: ({ color, size }) => <Feather name='box' color={color} size={size}/>,
-                    drawerLabel: 'Stock'
-                }}
-            />
-            <Drawer.Screen
-                name="Categories"
-                component={Categories}
-                options={{
-                    drawerIcon: ({ color, size }) => <Feather name='star' color={color} size={size}/>,
-                    drawerLabel: 'Categories'
-                }}
-            />
-            <Drawer.Screen
-                name="Products"
-                component={Products}
-                options={{
-                    drawerIcon: ({ color, size }) => <Feather name='shopping-cart' color={color} size={size}/>,
-                    drawerLabel: 'Products'
-                }}
-            />
-            <Drawer.Screen
-                name="Suppliers"
-                component={Suppliers}
-                options={{
-                    drawerIcon: ({ color, size }) => <Feather name='truck' color={color} size={size}/>,
-                    drawerLabel: 'Suppliers'
-                }}
-            />
+            {menuItems.map(({ name, label, Icon }) => (
+                <Drawer.Screen
+                    key={name}
+                    name={name}
+                    component={TabRoutes}
+                    options={{
+                        drawerIcon: ({ color, size }) => <Feather name={Icon} color={color} size={size}/>,
+                        drawerLabel: label
+                    }}
+                />
+            ))}
         </Drawer.Navigator>
     )
 }
