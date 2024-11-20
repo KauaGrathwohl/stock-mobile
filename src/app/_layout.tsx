@@ -9,7 +9,7 @@ function ProtectedLayout({ children }: { children: React.ReactNode }) {
   
     useEffect(() => {
       if (!isAuthenticated) {
-        router.navigate('(public)' as any);
+        router.replace('/login');
       }
     }, [isAuthenticated]);
   

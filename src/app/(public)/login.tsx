@@ -3,62 +3,50 @@ import { Input } from "@/src/components/Input";
 import { useAuth } from "@/src/hooks/useAuth";
 import { useFetch } from "@/src/hooks/useFetch";
 import { Auth } from "@/src/interfaces/api";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
 
 const schema = z.object({
-    nome: z.string(),
     email: z.string().email({ message: 'Email inválido' }),
-    senha: z.string(),
-    cpf: z.string()
+    senha: z.string()
 });
 
-type SignUpFormSchema = z.infer<typeof schema>;
+type LoginFormSchema = z.infer<typeof schema>;
 
-export default function SignUp () {
+export default function Login () {
     const auth = useAuth();
     const [authResponse, authFetchData] = useFetch();
-    const { control, handleSubmit, formState: { errors } } = useForm<SignUpFormSchema>({
+    const { control, handleSubmit, formState: { errors } } = useForm<LoginFormSchema>({
         resolver: zodResolver(schema),
     });
 
-    const onSubmit = async (data: SignUpFormSchema) => {
+    const onSubmit = async (data: LoginFormSchema) => {
+        if (!data) {
+            return alert('Preencha todos os campos');
+        };
+
+        const url = `${process.env.EXPO_PUBLIC_API_URL}/auth`;
         const body = JSON.stringify(data);
         const headers = { 'Content-Type': 'application/json' };
-        await authFetchData('usuarios', { body, headers, method: 'POST' });  
-        
-        console.log(authResponse, 'authResponse.data', )
+        await authFetchData(url, { body, headers, method: 'POST' });  
     };
 
     useEffect(() => {
+        console.log('authResponse =>', authResponse)
         if (authResponse.data){
             auth?.login(authResponse?.data as Auth);        
-            router.navigate('(auth)' as any);
+            router.replace('/home');
         }
-    }, [authResponse.data, auth, router.navigate])
+    }, [authResponse.data, auth, router.replace])
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>StockSense</Text>
-            <Text style={styles.text}>Crie sua conta!</Text>
-            <Controller
-                control={control}
-                name="nome"
-                render={({ field: { onChange, onBlur, value } }) => (
-                    <Input
-                        label="Nome"
-                        placeholder="Digite seu nome"
-                        keyboardType='default'
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                    />
-                )}
-            />
+            <Text style={styles.text}>Bem-vindo!</Text>
             <Controller
                 control={control}
                 name="email"
@@ -87,27 +75,14 @@ export default function SignUp () {
                     />
                 )}
             />
-            <Controller
-                control={control}
-                name="cpf"
-                render={({ field: { onChange, onBlur, value } }) => (
-                    <Input
-                        label="CPF"
-                        placeholder="Digite seu CPF"
-                        keyboardType="default"
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                    />
-                )}
-            />
+
             <Button
-                title="Cadastrar"
+                title="Entrar"
                 onPress={handleSubmit(onSubmit)}
             />
             <Button
-                title="Já possuo uma conta"
-                onPress={() => router.navigate('(public)' as any)}
+                title="Criar nova conta"
+                onPress={() => router.replace('/register' as any)}
             />
         </View>
     )

@@ -4,19 +4,18 @@ import { useAuth } from '@/src/hooks/useAuth';
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function Home() {
+export default function Stock() {
     const auth = useAuth();
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>StockSense</Text>
-            <Text style={styles.text}>Olá, Usuário!</Text>
+            <Text style={styles.title}>Lotes</Text>
             <Button
                 title="Sair"
                 onPress={
                     () => {
                         auth.logout();
-                        router.navigate('(public)' as any);
+                        router.replace('/login');
                     }
                 } 
             />
