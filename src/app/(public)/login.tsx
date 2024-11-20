@@ -1,5 +1,5 @@
-import { Button } from "@/src/components/Button";
-import { Input } from "@/src/components/Input";
+import { Button } from "@/src/components/common/Button";
+import { Input } from "@/src/components/common/Input";
 import { useAuth } from "@/src/hooks/useAuth";
 import { useFetch } from "@/src/hooks/useFetch";
 import { Auth } from "@/src/interfaces/api";

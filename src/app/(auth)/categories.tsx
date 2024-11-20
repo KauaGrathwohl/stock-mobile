@@ -1,7 +1,5 @@
 
-import { Button } from '@/src/components/Button';
 import { useAuth } from '@/src/hooks/useAuth';
-import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function Categories() {
