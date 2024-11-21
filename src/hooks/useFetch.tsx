@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocalStorage } from './useLocalStorage';
 
 type FetchResponse<T> = {
   data: T | null;
@@ -17,12 +18,24 @@ export const useFetch = <T,>() => {
     error: null,
     isLoading: false,
   });
+  const { getItem } = useLocalStorage();
 
   const fetchData = async (url: string, fetchOptions?: FetchOptions) => {
     setResponse((prevState) => ({ ...prevState, isLoading: true }));
 
     try {
-      const res = await fetch(url, fetchOptions);
+      const token = await getItem('token');
+      const headers = fetchOptions?.headers ?? {};
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const res = await fetch(url, {
+        ...fetchOptions,
+        headers: headers
+      });
+
       if (!res.ok) throw new Error('Network response was not ok');
       const data = await res.json();
       setResponse({ data, error: null, isLoading: false });
