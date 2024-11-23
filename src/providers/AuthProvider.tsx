@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [empresa, setEmpresa] = useState<Empresa | null>(null);
 
-    const [responseEmpresa, fetchDataEmpresa] = useFetch<EmpresaResponse>();
+    const [responseEmpresa, fetchDataEmpresa] = useFetch<{company: Empresa}>();
     const [responseUser, fetchDataUser] = useFetch<UserResponse>();
 
     const { setItem, getItem, removeItem } = useLocalStorage();
@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const getEmpresaData = async () => {
         if (dataLogin) {
-            const url = `${process.env.EXPO_PUBLIC_API_URL}/empresa?empresa=${dataLogin.empresa}`; 
+            const url = `${process.env.EXPO_PUBLIC_API_URL}/empresa/${dataLogin.empresa}?empresa=${dataLogin.empresa}`; 
             const headers = { 
                 'Authorization': `Bearer ${dataLogin.token}`,
                 'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const method = 'GET';
             await fetchDataEmpresa(url, { headers, method });
             if (responseEmpresa.data) {
-                setEmpresa(responseEmpresa.data.companies[0]);
+                setEmpresa(responseEmpresa.data.company);
             }
         }
     };
