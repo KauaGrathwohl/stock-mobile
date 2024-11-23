@@ -7,6 +7,7 @@ import {
   Modal,
   ToastAndroid,
   Button,
+  ScrollView
 } from "react-native";
 import { EntradaSaida } from "@/src/interfaces/api";
 import { Controller, useForm } from "react-hook-form";
@@ -75,9 +76,9 @@ export default function ModalMovimentacao({ isVisible, onFinish }: Params) {
   }, [movimentacaoResponse]);
 
   return (
-    <Modal visible={isVisible} transparent={true} animationType="slide">
+    <Modal visible={isVisible} transparent={true} animationType="slide" style={styles.modal}>
       <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
+        <ScrollView style={styles.modalContent}>
           <Text style={styles.modalTitle}>Nova Movimentação</Text>
 
           <Controller
@@ -138,16 +139,16 @@ export default function ModalMovimentacao({ isVisible, onFinish }: Params) {
             <Button title="Cancelar" onPress={() => onFinish()} />
             <Button title="Adicionar" onPress={handleSubmit(onSubmit)} />
           </View>
-        </View>
+        </ScrollView>
       </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
+  modal: {
+    maxHeight: '80%',
+    maxWidth: '90%',
   },
   modalContainer: {
     flex: 1,
@@ -157,6 +158,8 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: "90%",
+    maxHeight: '80%',
+    maxWidth: '90%',
     backgroundColor: "#fff",
     borderRadius: 10,
     padding: 20,
@@ -177,5 +180,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
+    paddingBottom: 30
   },
 });

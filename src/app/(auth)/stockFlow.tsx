@@ -169,10 +169,12 @@ export default function StockFlow() {
         }
       />
 
-      <ModalMovimentacao
-        isVisible={isModalVisible}
-        onFinish={() => setModalVisible(!isModalVisible)}
-      />
+      {isModalVisible && (
+        <ModalMovimentacao
+          isVisible={isModalVisible}
+          onFinish={() => setModalVisible(!isModalVisible)}
+        />
+      )}
 
       <TouchableOpacity
         style={styles.floatingButton}

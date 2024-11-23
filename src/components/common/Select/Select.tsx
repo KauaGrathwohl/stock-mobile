@@ -91,20 +91,17 @@ export default function Select({
               onChangeText={handleSearch}
             />
           )}
-          <FlatList
-            data={options}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.item}
-                onPress={() => handleSelect(item)}
-              >
-                <Text style={styles.itemText}>
-                  {typeof item === "object" ? item[labelKey] : item}
-                </Text>
-              </TouchableOpacity>
-            )}
-          />
+          {options.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.item}
+              onPress={() => handleSelect(item)}
+            >
+              <Text style={styles.itemText}>
+                {typeof item === "object" ? item[labelKey] : item}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       )}
     </View>
