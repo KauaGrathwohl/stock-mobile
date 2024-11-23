@@ -1,121 +1,116 @@
 import { CardLoteVencimento } from '@/src/components/pages/Home/CardLoteVencimento';
 import { useAuth } from '@/src/hooks/useAuth';
+import { useFetch } from '@/src/hooks/useFetch';
 import { Feather } from '@expo/vector-icons';
-import { ActivityIndicator, StyleSheet, Text, Touchable, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+type Lote = {
+  id: number;
+  codigoBarras: string;
+  status: string;
+  dataFabricacao: string;
+  dataVencimento: string;
+  produto: {
+    id: number;
+    descricao: string;
+  }
+};
 
 export default function Home() {
-    const auth = useAuth();
-    const arrLoteVencimento = [
-        {
-            "id": 3,
-            "codigoBarras": "1266bc456dug",
-            "dataFabricacao": "2024-01-10",
-            "dataVencimento": "2024-05-10",
-            "produto": {
-                "id": 2,
-                "descricao": "Coca-cola Zero 600ml"
-            },
-            "status": "expired"
-        },
-        {
-            "id": 4,
-            "codigoBarras": "1266bc34456dug",
-            "dataFabricacao": "2024-01-10",
-            "dataVencimento": "2024-05-10",
-            "produto": {
-                "id": 3,
-                "descricao": "Coca-cola Zero 2l"
-            },
-            "status": "expired"
-        },
-        {
-            "id": 5,
-            "codigoBarras": "1266bc34456dug",
-            "dataFabricacao": "2024-01-10",
-            "dataVencimento": "2024-05-10",
-            "produto": {
-                "id": 3,
-                "descricao": "Makita"
-            },
-            "status": "expiring"
-        },
-        {
-            "id": 6,
-            "codigoBarras": "1266bc34456dug",
-            "dataFabricacao": "2024-01-10",
-            "dataVencimento": "2024-05-10",
-            "produto": {
-                "id": 3,
-                "descricao": "Guaraná 600ml"
-            },
-            "status": "valid"
-        }
-    ];
+  const { empresa, dataLogin, user } = useAuth();
+  const [response, fetchData] = useFetch<{ arrExpiredLotes: Lote[]; totalSaidas: any[]; arrExpiringLotes: Lote[] }>();
+  const [lotesVencidos, setLotesVencidos] = useState<Lote[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.greetings}>
-                {auth.user?.nome ? (
-                    <Text style={styles.h1}>
-                        Olá, {auth.user?.nome}!
-                    </Text>
-                ) : ( <ActivityIndicator/> )}
-            </View>
-            {arrLoteVencimento.length ? (
-                <View>
-                    <View style={styles.cardVencimentoTitle}>
-                        <Text style={styles.h2}>
-                            Lotes a vencer
-                        </Text>
-                        <TouchableOpacity style={styles.refresh}>
-                            <Feather name="refresh-cw" size={24} color="black" />
-                        </TouchableOpacity>
-                    </View>
-                    {arrLoteVencimento.map((loteVencimento) => (
-                        <CardLoteVencimento
-                            key={loteVencimento.id}
-                            id={loteVencimento.id}
-                            codigoBarras={loteVencimento.codigoBarras}
-                            status={loteVencimento.status}
-                            dataFabricacao={loteVencimento.dataFabricacao}
-                            dataVencimento={loteVencimento.dataVencimento}
-                            produto={loteVencimento.produto}
-                        />
-                    ))}
-                </View>
-            ) : ''}
+  const fetchLotesVencidos = async () => {
+    if (!empresa?.id) return;
+    setIsLoading(true);
+    const url = `${process.env.EXPO_PUBLIC_API_URL}/lote/vencido?empresa=${empresa.id}`;
+    await fetchData(url, {
+      headers: { Authorization: `Bearer ${dataLogin?.token}` },
+      method: 'GET',
+    });
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (!empresa) return;
+    fetchLotesVencidos();
+  }, [empresa]);
+
+  useEffect(() => {
+    if (response.data?.arrExpiredLotes) {
+      setLotesVencidos(response.data.arrExpiredLotes);
+    }
+  }, [response]);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.greetings}>
+        {user?.nome ? (
+          <Text style={styles.h1}>Olá, {user.nome}!</Text>
+        ) : (
+          <ActivityIndicator size="large" />
+        )}
+      </View>
+
+      {isLoading ? (
+        <ActivityIndicator size="large" />
+      ) : lotesVencidos.length ? (
+        <View>
+          <View style={styles.cardVencimentoTitle}>
+            <Text style={styles.h2}>Lotes Vencidos</Text>
+            <TouchableOpacity style={styles.refresh} onPress={fetchLotesVencidos}>
+              <Feather name="refresh-cw" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
+          {lotesVencidos.map((lote) => (
+            <CardLoteVencimento
+              key={lote.id}
+              id={lote.id}
+              codigoBarras={lote.codigoBarras}
+              status={lote.status}
+              dataFabricacao={lote.dataFabricacao}
+              dataVencimento={lote.dataVencimento}
+              produto={lote.produto}
+            />
+          ))}
         </View>
-    )
+      ) : (
+        <Text>Nenhum lote vencido encontrado.</Text>
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingHorizontal: 16,
-        paddingVertical: 32,
-        width: '100%',
-    },
-    greetings: {
-        marginBottom: 32,
-    },
-    h1: {
-        fontSize: 32,
-        marginBottom: 16,
-        fontWeight: 'bold',
-    },
-    h2: {
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
-    cardVencimentoTitle: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 16,
-        width: '100%',
-    },
-    refresh: {
-        marginTop: 8
-    }
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 32,
+    width: '100%',
+  },
+  greetings: {
+    marginBottom: 32,
+  },
+  h1: {
+    fontSize: 32,
+    marginBottom: 16,
+    fontWeight: 'bold',
+  },
+  h2: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  cardVencimentoTitle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    width: '100%',
+  },
+  refresh: {
+    marginTop: 8,
+  },
 });

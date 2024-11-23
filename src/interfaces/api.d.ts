@@ -1,3 +1,10 @@
+export interface Auth {
+    menssage: string;
+    token: string;
+    empresa: number;
+    usuario: number;
+}
+
 interface Empresa {
     id: number;
     descricao: string;
@@ -29,14 +36,6 @@ interface User {
     empresa: Empresa;
     cargo: Cargo | null;
 }
-
-
-export interface Auth {
-    menssage: string;
-    token: string;
-    empresa: number;
-    usuario: number;
-}
 export interface Entrada {
     id: number;
     quantidade: number;
@@ -53,8 +52,6 @@ export interface Saida {
     createdAt: string;
     updatedAt: string;
 }
-
-
 
 export interface ListUserResponse {
     users: User[];
@@ -147,7 +144,6 @@ export interface Lote {
     createdAt: string;
     updatedAt: string;
 }
-
 
 export interface EntradaSaida {
     id: number;
