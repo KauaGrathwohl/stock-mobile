@@ -48,6 +48,7 @@ export interface Entrada {
 
 export interface Saida {
     id: number;
+    produto: string;
     quantidade: number;
     createdAt: string;
     updatedAt: string;
