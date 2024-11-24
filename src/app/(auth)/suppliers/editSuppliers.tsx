@@ -4,6 +4,7 @@ import { Input } from '@/src/components/common/Input';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useAuth } from '@/src/hooks/useAuth';
+import { useFetch } from '@/src/hooks/useFetch'; // Hook para centralizar requisições
 
 interface Supplier {
     id: string;
@@ -15,6 +16,7 @@ interface Supplier {
 export const EditSuppliers = ({ route, navigation }: { route: any; navigation: any }) => {
     const { item } = route.params;
     const { empresa, dataLogin } = useAuth();
+    const [responseUpdateSupplier, fetchDataUpdateSupplier] = useFetch();
 
     const [name, setName] = useState(item.name);
     const [phone, setPhone] = useState(item.phone);
@@ -27,33 +29,33 @@ export const EditSuppliers = ({ route, navigation }: { route: any; navigation: a
         }
 
         const url = `${process.env.EXPO_PUBLIC_API_URL}/fornecedor/${item.id}?empresa=${empresa?.id}`;
+        const headers = {
+            Authorization: `Bearer ${dataLogin?.token}`,
+            'Content-Type': 'application/json',
+        };
         const body = JSON.stringify({
             descricao: name,
             email: "ambev@gmail.com",
             telefone: phone,
             cnpj: cnpj,
             logradouro: "endereço ambev",
-            cidade: 0
+            cidade: 0,
         });
 
         try {
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    Authorization: `Bearer ${dataLogin?.token}`,
-                    'Content-Type': 'application/json'
-                },
-                body
-            });
+            await fetchDataUpdateSupplier(url, { method: 'PUT', headers, body });
 
-            if (response.ok) {
-                Alert.alert("Sucesso", "Fornecedor atualizado com sucesso!");
-                navigation.goBack();
-            } else {
-                Alert.alert("Erro", "Falha ao atualizar fornecedor!");
+            if (responseUpdateSupplier?.error) {
+                console.error('Erro ao atualizar fornecedor:', responseUpdateSupplier.error);
+                Alert.alert('Erro', 'Não foi possível atualizar o fornecedor.');
+                return;
             }
+
+            Alert.alert('Sucesso', 'Fornecedor atualizado com sucesso!');
+            navigation.goBack();
         } catch (error) {
-            Alert.alert("Erro", "Ocorreu um erro ao atualizar o fornecedor!");
+            console.error('Erro na requisição:', error);
+            Alert.alert('Erro', 'Ocorreu um erro ao atualizar o fornecedor.');
         }
     };
 

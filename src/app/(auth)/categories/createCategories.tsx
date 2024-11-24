@@ -14,29 +14,59 @@ interface InputField {
     keyboardType: string;
 }
 
-export const CreateCategories =  ({ navigation }: { navigation: any }) => {
-    const { empresa, dataLogin, user } = useAuth();
+export const CreateCategories = ({ navigation }: { navigation: any }) => {
+    const { empresa, dataLogin } = useAuth();
     const [responsePostCategorie, fetchDataPostCategorie] = useFetch();
-    const [inputs, setInputs] = useState<InputField[]>([{ id: "1", label: "Nome", value: "", placeholder: "Digite o nome Da Categoria", keyboardType: "default" }]);
-    const handleInputChange = (id: string, text: string) => {setInputs((prevInputs) =>prevInputs.map((input) => input.id === id ? { ...input, value: text } : input))};
+    const [inputs, setInputs] = useState<InputField[]>([
+        { id: "1", label: "Nome", value: "", placeholder: "Digite o nome Da Categoria", keyboardType: "default" },
+    ]);
 
-    const handleSave = () => {
+    const handleInputChange = (id: string, text: string) => {
+        setInputs((prevInputs) =>
+            prevInputs.map((input) =>
+                input.id === id ? { ...input, value: text } : input
+            )
+        );
+    };
+
+    const handleSave = async () => {
         if (inputs.some((input) => !input.value.trim())) {
             Alert.alert("Erro", "Todos os campos são obrigatórios!");
             return;
         }
-        const url = `${process.env.EXPO_PUBLIC_API_URL}/categoria?empresa=${empresa?.id}`;
-        const body = JSON.stringify({'descricao': inputs[0]?.value})  
-        console.log("Dados salvos:", inputs, 'url: ',  url, 'Body:', body);
 
-        fetchDataPostCategorie(url, {
-            body,
-            headers: { Authorization: `Bearer ${dataLogin?.token}` },
-            method: 'POST'
-        })
-        console.log(responsePostCategorie)
-        Alert.alert("Sucesso", "Categoria criada com sucesso!");
-        navigation.goBack();
+        const url = `${process.env.EXPO_PUBLIC_API_URL}/categoria?empresa=${empresa?.id}`;
+        const headers = {
+            Authorization: `Bearer ${dataLogin?.token}`,
+            "Content-Type": "application/json",
+        };
+
+        const body = {
+            descricao: inputs[0]?.value,
+        };
+
+        console.log("Dados enviados:", body, "URL:", url);
+
+        try {
+            // Realiza a requisição POST
+            await fetchDataPostCategorie(url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+            });
+
+            if (responsePostCategorie?.error) {
+                console.error("Erro ao criar categoria:", responsePostCategorie.error);
+                Alert.alert("Erro", "Não foi possível criar a categoria.");
+                return;
+            }
+
+            Alert.alert("Sucesso", "Categoria criada com sucesso!");
+            navigation.goBack();
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+            Alert.alert("Erro", "Ocorreu um erro ao criar a categoria.");
+        }
     };
 
     const renderItem = ({ item }: { item: InputField }) => (
