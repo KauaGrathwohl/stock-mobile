@@ -5,7 +5,7 @@ import TabRoutes from './tab.routes';
 import Products from '../(auth)/products';
 import { Categories } from '@/src/app/(auth)/categories';
 import { Suppliers } from '@/src/app/(auth)/suppliers';
-import Stock from '../(auth)/stock';
+import { Stocks } from '@/src/app/(auth)/stocks/stocks';
 import Profile from '../(auth)/profile';
 
 import { useAuth } from '@/src/hooks/useAuth';
@@ -22,7 +22,7 @@ type DrawerMenuItem = {
 
 const menuItems: Array<DrawerMenuItem> = [
     { name: "Home", label: "Home", Icon: 'home', component: TabRoutes },
-    { name: "Lotes", label: "Lotes", Icon: 'archive', component: Stock },
+    { name: "Lotes", label: "Lotes", Icon: 'archive', component: Stocks },
     { name: "Produtos", label: "Produtos", Icon: 'box', component: Products },
     { name: "Categorias", label: "Categorias", Icon: 'list', component: Categories },
     { name: "Fornecedores", label: "Fornecedores", Icon: 'users', component: Suppliers },

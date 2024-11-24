@@ -2,6 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import DrawerRoutes from './drawer.routes';
 import {CreateSuppliers, DetailsSuppliers, EditSuppliers} from "@/src/app/(auth)/suppliers";
 import { DetailsCategories,CreateCategories,EditCategories } from '../(auth)/categories'
+import { DetailsStocks, CreateStocks, EditStocks } from '../(auth)/stocks';
 
 const Stack = createStackNavigator();
 
@@ -16,7 +17,11 @@ export default function StackRoutes() {
 
             'DetailsSuppliers',
             'EditSuppliers',
-            'CreateSuppliers'];
+            'CreateSuppliers',
+        
+            'DetailsStock',
+            'EditStock',
+            'CreateStock',];
 
         return namePages.includes(route.name);
     };
@@ -36,6 +41,8 @@ export default function StackRoutes() {
             <Stack.Screen name="DetailsSuppliers"  component={DetailsSuppliers} options={{ headerTitle: "Detalhes do Fornecedor", headerBackTitle: "Voltar"}} />
             <Stack.Screen name="EditSuppliers"     component={EditSuppliers} options={{ headerTitle: "Edição do Fornecedor", headerBackTitle: "Voltar"}} />
             <Stack.Screen name="CreateSuppliers"   component={CreateSuppliers} options={{ headerTitle: "Criação do Fornecedor", headerBackTitle: "Voltar"}} />
+        
+            
         </Stack.Navigator>
     );
 }
