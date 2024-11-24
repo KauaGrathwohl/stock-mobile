@@ -32,11 +32,7 @@ export const Categories = ({ navigation, route }: { navigation: any; route: any}
         console.log('Fetching categories...');
         const url = `${process.env.EXPO_PUBLIC_API_URL}/categoria?empresa=${empresa?.id}`;
         const headers = { Authorization: `Bearer ${dataLogin?.token}` };
-
         await fetchDataGetCategories(url, { headers, method: 'GET' });
-
-      
-
         setLoading(false); 
     };
 

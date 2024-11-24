@@ -1,7 +1,7 @@
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import { Feather } from '@expo/vector-icons';
 
-import {Products} from '../(auth)/product/products';
+import { Products } from '../(auth)/product/products';
 import { Categories } from '@/src/app/(auth)/categories';
 import { Suppliers } from '@/src/app/(auth)/suppliers';
 import { Stocks } from '@/src/app/(auth)/stocks/stocks';
