@@ -1,6 +1,7 @@
 import { TouchableOpacity, TouchableOpacityProps, Text, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './styles';
+import React from 'react';
 
 interface ButtonProps extends TouchableOpacityProps {
     title: string;
