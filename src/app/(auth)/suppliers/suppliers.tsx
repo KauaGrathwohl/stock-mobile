@@ -5,6 +5,7 @@ import { useAuth } from '@/src/hooks/useAuth';
 import { useFetch } from '@/src/hooks/useFetch';
 import { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, View, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface DataItem {
     id: string;
@@ -27,6 +28,15 @@ interface Supplier {
     cnpj: string;
 }
 
+const formatCNPJ = (cnpj: string): string => {
+    return cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
+};
+
+const formatPhoneNumber = (number: string): string => {
+    const truncatedNumber = number.slice(0, 11);
+    return truncatedNumber.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+};
+
 export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
     const auth = useAuth();
     const [valueSearch, setValueSearch] = useState('');
@@ -40,22 +50,25 @@ export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
         { id: '3', label: 'CNPJ', value: '', placeholder: 'Digite o CNPJ', keyboardType: 'default' },
     ]);
 
-    useEffect(() => {
-        const fetchSuppliers = async () => {
-            const url = `${process.env.EXPO_PUBLIC_API_URL}/fornecedor?empresa=${auth.user?.empresa.id ?? ''}&skip=0`;
-            await fetchData(url, {
-                headers: { Authorization: `Bearer ${auth.dataLogin?.token ?? ''}` },
-            });
-        };
-        fetchSuppliers();
-    }, [auth.user?.empresa.id, auth.dataLogin?.token]);
+    const fetchSuppliers = async () => {
+        const url = `${process.env.EXPO_PUBLIC_API_URL}/fornecedor?empresa=${auth.user?.empresa.id ?? ''}&skip=0`;
+        await fetchData(url, {
+            headers: { Authorization: `Bearer ${auth.dataLogin?.token ?? ''}` },
+        });
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchSuppliers();
+        }, [auth.user?.empresa.id, auth.dataLogin?.token])
+    );
 
     useEffect(() => {
         if (response.data && Array.isArray(response.data.fornecedores)) {
             const suppliers = response.data.fornecedores.map((supplier) => [
                 { id: supplier.id, key: 'Nome', value: supplier.descricao },
-                { id: supplier.id, key: 'Telefone', value: supplier.telefone },
-                { id: supplier.id, key: 'CNPJ', value: supplier.cnpj },
+                { id: supplier.id, key: 'Telefone', value: formatPhoneNumber(supplier.telefone) },
+                { id: supplier.id, key: 'CNPJ', value: formatCNPJ(supplier.cnpj) },
             ]);
             setItems(suppliers);
             setFilteredData(suppliers);
@@ -83,6 +96,7 @@ export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
     const handleSaveNewSupplier = useCallback(
         (newInputs: InputField[]) => {
             console.log("Inputs recebidos do ItemCreate:", newInputs);
+
             const newSupplier = newInputs.map((input) => ({
                 id: Math.random().toString(),
                 key: input.label,
@@ -90,6 +104,7 @@ export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
             }));
 
             const updatedItems = [...items, newSupplier];
+
             setItems(updatedItems);
             setFilteredData(updatedItems);
             Alert.alert('Sucesso', 'Fornecedor adicionado com sucesso!');
@@ -134,6 +149,7 @@ export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
                             title: 'Novo Fornecedor',
                             initialInputs: inputsToCreate,
                             onSave: handleSaveNewSupplier,
+                            refreshSuppliers: fetchSuppliers, // Pass the callback to refresh suppliers
                         },
                     })
                 }

@@ -4,7 +4,6 @@ import { Input } from "@/src/components/common/Input";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { useState } from "react";
 import { useAuth } from "@/src/hooks/useAuth";
-import { useFetch } from "@/src/hooks/useFetch";
 
 interface InputField {
     id: string;
@@ -15,8 +14,8 @@ interface InputField {
 }
 
 export const CreateSuppliers = ({ navigation, route }: { navigation: any; route: any }) => {
-    const { empresa, dataLogin, user } = useAuth();
-    const [responsePostSupplier, fetchDataPostSupplier] = useFetch();
+    const { empresa, dataLogin } = useAuth();
+    const { refreshSuppliers } = route.params; // Get the callback from route params
 
     const [inputs, setInputs] = useState<InputField[]>([
         { id: "1", label: "Nome", value: "", placeholder: "Digite o nome do fornecedor", keyboardType: "default" },
@@ -32,27 +31,42 @@ export const CreateSuppliers = ({ navigation, route }: { navigation: any; route:
         );
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (inputs.some((input) => !input.value.trim())) {
             Alert.alert("Erro", "Todos os campos são obrigatórios!");
             return;
         }
-        console.log("Dados salvos:", inputs);
-        const url = `${process.env.EXPO_PUBLIC_API_URL}/fornecedor?empresa=${empresa?.id}`;
 
+        const url = `${process.env.EXPO_PUBLIC_API_URL}/fornecedor?empresa=${empresa?.id}`;
         const body = JSON.stringify({
-            'nome': inputs[0]?.value,
-            'telefone': inputs[1]?.value,
-            'cnpj': inputs[2]?.value
+            descricao: inputs[0]?.value,
+            email: "email@ficticio.com",
+            telefone: inputs[1]?.value,
+            cnpj: inputs[2]?.value,
+            logradouro: "Logradouro Fictício",
+            cidade: 0
         });
-        fetchDataPostSupplier(url, {
-            body,
-            headers: { Authorization: `Bearer ${dataLogin?.token}` },
-            method: 'POST'
-        });
-        console.log(responsePostSupplier);
-        Alert.alert("Sucesso", "Fornecedor criado com sucesso!");
-        navigation.goBack();
+
+        try {
+            const response = await fetch(url, {
+                body,
+                headers: {
+                    Authorization: `Bearer ${dataLogin?.token}`,
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                Alert.alert("Sucesso", "Fornecedor criado com sucesso!");
+                refreshSuppliers(); // Call the callback to refresh suppliers
+                navigation.goBack();
+            } else {
+                Alert.alert("Erro", "Falha ao criar fornecedor!");
+            }
+        } catch (error) {
+            Alert.alert("Erro", "Ocorreu um erro ao criar o fornecedor!");
+        }
     };
 
     const renderItem = ({ item }: { item: InputField }) => (
@@ -78,7 +92,6 @@ export const CreateSuppliers = ({ navigation, route }: { navigation: any; route:
                 keyboardShouldPersistTaps="handled"
             />
 
-            {/* Botões fixados na parte inferior */}
             <View style={styles.actionsContainer}>
                 <Actions>
                     <Button title="Cancelar" onPress={() => navigation.goBack()} />
@@ -105,7 +118,7 @@ const styles = StyleSheet.create({
         paddingBottom: 16,
     },
     flatList: {
-        flexGrow: 1, // A FlatList ocupa o espaço disponível acima dos botões
+        flexGrow: 1,
     },
     actionsContainer: {
         position: "absolute",

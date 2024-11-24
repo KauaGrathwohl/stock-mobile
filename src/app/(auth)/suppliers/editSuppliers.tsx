@@ -3,6 +3,7 @@ import { Button } from '@/src/components/common/Button';
 import { Input } from '@/src/components/common/Input';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import { useAuth } from '@/src/hooks/useAuth';
 
 interface Supplier {
     id: string;
@@ -13,27 +14,47 @@ interface Supplier {
 
 export const EditSuppliers = ({ route, navigation }: { route: any; navigation: any }) => {
     const { item } = route.params;
+    const { empresa, dataLogin } = useAuth();
 
     const [name, setName] = useState(item.name);
     const [phone, setPhone] = useState(item.phone);
     const [cnpj, setCnpj] = useState(item.cnpj);
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!name || !phone || !cnpj) {
             Alert.alert('Erro', 'Todos os campos são obrigatórios!');
             return;
         }
 
-        const updatedSupplier = {
-            id: item.id,
-            name,
-            phone,
-            cnpj,
-        };
+        const url = `${process.env.EXPO_PUBLIC_API_URL}/fornecedor/${item.id}?empresa=${empresa?.id}`;
+        const body = JSON.stringify({
+            descricao: name,
+            email: "ambev@gmail.com",
+            telefone: phone,
+            cnpj: cnpj,
+            logradouro: "endereço ambev",
+            cidade: 0
+        });
 
-        console.log('Fornecedor atualizado:', updatedSupplier);
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${dataLogin?.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body
+            });
 
-        navigation.goBack();
+            if (response.ok) {
+                Alert.alert("Sucesso", "Fornecedor atualizado com sucesso!");
+                navigation.goBack();
+            } else {
+                Alert.alert("Erro", "Falha ao atualizar fornecedor!");
+            }
+        } catch (error) {
+            Alert.alert("Erro", "Ocorreu um erro ao atualizar o fornecedor!");
+        }
     };
 
     return (

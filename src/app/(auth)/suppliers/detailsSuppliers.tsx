@@ -2,7 +2,8 @@ import { Actions } from '@/src/components/common/Actions';
 import { Button } from '@/src/components/common/Button';
 import { ModalExclude } from '@/src/components/common/ModalExclude';
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
+import { useAuth } from '@/src/hooks/useAuth';
 
 interface DataItem {
     id: string;
@@ -12,6 +13,7 @@ interface DataItem {
 
 export const DetailsSuppliers = ({ route, navigation }: { route: any, navigation: any }) => {
     const { item } = route.params;
+    const { empresa, dataLogin } = useAuth();
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleCancel = () => {
@@ -19,9 +21,28 @@ export const DetailsSuppliers = ({ route, navigation }: { route: any, navigation
         console.log("Exclusão cancelada.");
     };
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         setModalVisible(false);
-        console.log("Item excluído.");
+        const url = `${process.env.EXPO_PUBLIC_API_URL}/fornecedor/${item[0].id}?empresa=${empresa?.id}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${dataLogin?.token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                Alert.alert("Sucesso", "Fornecedor excluído com sucesso!");
+                navigation.goBack();
+            } else {
+                Alert.alert("Erro", "Falha ao excluir fornecedor!");
+            }
+        } catch (error) {
+            Alert.alert("Erro", "Ocorreu um erro ao excluir o fornecedor!");
+        }
     };
 
     return (
