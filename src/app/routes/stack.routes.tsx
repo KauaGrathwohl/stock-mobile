@@ -43,6 +43,10 @@ export default function StackRoutes() {
             <Stack.Screen name="EditSuppliers"     component={EditSuppliers} options={{ headerTitle: "Edição do Fornecedor", headerBackTitle: "Voltar"}} />
             <Stack.Screen name="CreateSuppliers"   component={CreateSuppliers} options={{ headerTitle: "Criação do Fornecedor", headerBackTitle: "Voltar"}} />
 
+            <Stack.Screen name="DetailsStock"      component={DetailsStocks} options={{ headerTitle: "Detalhes do Lote", headerBackTitle: "Voltar"}} />
+            <Stack.Screen name="EditStock"         component={EditStocks} options={{ headerTitle: "Edição do Lote", headerBackTitle: "Voltar"}} />
+            <Stack.Screen name="CreateStock"       component={CreateStocks} options={{ headerTitle: "Criação do Lote", headerBackTitle: "Voltar"}} />
+
             <Stack.Screen name="CreateStockFlow"   component={CreateStockFlow} options={{ headerTitle: "Criar Movimentação", headerBackTitle: "Voltar"}} />
         
         </Stack.Navigator>

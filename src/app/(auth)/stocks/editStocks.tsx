@@ -16,7 +16,6 @@ export const EditStocks = ({ route, navigation }: { route: any; navigation: any 
     const [dataFabricacao, setDataFabricacao] = useState(stock.dataFabricacao);
     const [dataVencimento, setDataVencimento] = useState(stock.dataVencimento);
     const [observacoes, setObservacoes] = useState(stock.observacoes);
-    const [produto, setProduto] = useState(stock.produto.toString());
 
     const handleSave = async () => {
         const url = `${process.env.EXPO_PUBLIC_API_URL}/lote/${stock.id}?empresa=${empresa?.id}`;
@@ -30,7 +29,7 @@ export const EditStocks = ({ route, navigation }: { route: any; navigation: any 
             dataFabricacao,
             dataVencimento,
             observacoes,
-            produto: parseInt(produto),
+            produto: stock.produto.id, // Produto permanece inalterado
         });
 
         try {
@@ -50,7 +49,11 @@ export const EditStocks = ({ route, navigation }: { route: any; navigation: any 
         <View style={styles.container}>
             <Text style={styles.title}>Editar Lote</Text>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <Input label="Código de Barras" value={codigoBarras} onChangeText={setCodigoBarras} />
+                <Input
+                    label="Código de Barras"
+                    value={codigoBarras}
+                    onChangeText={setCodigoBarras}
+                />
                 <Input
                     label="Quantidade"
                     value={quantidade}
@@ -74,12 +77,10 @@ export const EditStocks = ({ route, navigation }: { route: any; navigation: any 
                     value={observacoes}
                     onChangeText={setObservacoes}
                 />
-                <Input
-                    label="Produto ID"
-                    value={produto}
-                    onChangeText={setProduto}
-                    keyboardType="numeric"
-                />
+                <View style={styles.fixedField}>
+                    <Text style={styles.label}>Produto</Text>
+                    <Text style={styles.value}>{stock.produto.descricao}</Text>
+                </View>
             </ScrollView>
             <Actions>
                 <Button title="Cancelar" onPress={() => navigation.goBack()} />
@@ -103,5 +104,21 @@ const styles = StyleSheet.create({
     scrollContainer: {
         paddingHorizontal: 16,
         paddingBottom: 16,
+    },
+    fixedField: {
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+        marginBottom: 16,
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 4,
+        color: '#555',
+    },
+    value: {
+        fontSize: 16,
+        color: '#000',
     },
 });

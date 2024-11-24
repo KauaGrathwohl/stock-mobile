@@ -7,22 +7,27 @@ import { useAuth } from '@/src/hooks/useAuth';
 import { useFetch } from '@/src/hooks/useFetch';
 import { useFocusEffect } from '@react-navigation/native';
 
-export interface Stock {
+export interface Produto {
+    id: number;
+    descricao: string;
+}
+
+export interface Lote {
     id: number;
     codigoBarras: string;
     quantidade: number;
     dataFabricacao: string;
     dataVencimento: string;
     observacoes: string;
-    produto: number;
+    produto: Produto;
 }
 
 export const Stocks = ({ navigation }: { navigation: any }) => {
     const { empresa, dataLogin } = useAuth();
-    const [responseGetStocks, fetchDataGetStocks] = useFetch<{ lotes: Stock[] }>();
+    const [responseGetStocks, fetchDataGetStocks] = useFetch<{ lotes: Lote[] }>();
     const [loading, setLoading] = useState<boolean>(true);
-    const [stocks, setStocks] = useState<Stock[]>([]);
-    const [filteredStocks, setFilteredStocks] = useState<Stock[]>([]);
+    const [stocks, setStocks] = useState<Lote[]>([]);
+    const [filteredStocks, setFilteredStocks] = useState<Lote[]>([]);
     const [search, setSearch] = useState<string>('');
 
     const fetchStocks = async () => {
@@ -38,10 +43,6 @@ export const Stocks = ({ navigation }: { navigation: any }) => {
         if (responseGetStocks?.error) {
             console.error('Erro ao buscar lotes:', responseGetStocks.error);
             Alert.alert('Erro', 'Não foi possível carregar os lotes.');
-        } else {
-            const lotes = responseGetStocks?.data?.lotes || [];
-            setStocks(lotes);
-            setFilteredStocks(lotes);
         }
         setLoading(false);
     };
@@ -53,6 +54,13 @@ export const Stocks = ({ navigation }: { navigation: any }) => {
     );
 
     useEffect(() => {
+        if (responseGetStocks?.data?.lotes) {
+            setStocks(responseGetStocks.data.lotes); // Atualiza os lotes
+            setFilteredStocks(responseGetStocks.data.lotes); // Atualiza o filtro
+        }
+    }, [responseGetStocks]);
+
+    useEffect(() => {
         if (search.trim() === '') {
             setFilteredStocks(stocks);
         } else {
@@ -60,14 +68,15 @@ export const Stocks = ({ navigation }: { navigation: any }) => {
             const filtered = stocks.filter(
                 (stock) =>
                     stock.codigoBarras.toLowerCase().includes(lowercasedSearch) ||
-                    stock.observacoes.toLowerCase().includes(lowercasedSearch)
+                    stock.observacoes.toLowerCase().includes(lowercasedSearch) ||
+                    stock.produto.descricao.toLowerCase().includes(lowercasedSearch)
             );
             setFilteredStocks(filtered);
         }
     }, [search, stocks]);
 
     const handleDeleteStock = async (stockId: number) => {
-        const url = `${process.env.EXPO_PUBLIC_API_URL}/lotes/${stockId}?empresa=${empresa?.id}`;
+        const url = `${process.env.EXPO_PUBLIC_API_URL}/lote/${stockId}?empresa=${empresa?.id}`;
         const headers = {
             Authorization: `Bearer ${dataLogin?.token}`,
             'Content-Type': 'application/json',
@@ -77,7 +86,7 @@ export const Stocks = ({ navigation }: { navigation: any }) => {
             const response = await fetch(url, { method: 'DELETE', headers });
             if (response.ok) {
                 Alert.alert('Sucesso', 'Lote excluído com sucesso!');
-                fetchStocks(); // Atualiza a lista após a exclusão
+                fetchStocks();
             } else {
                 Alert.alert('Erro', 'Não foi possível excluir o lote.');
             }
@@ -86,13 +95,13 @@ export const Stocks = ({ navigation }: { navigation: any }) => {
         }
     };
 
-    const renderStock = ({ item }: { item: Stock }) => (
+    const renderStock = ({ item }: { item: Lote }) => (
         <TouchableOpacity
             onPress={() => navigation.navigate('DetailsStock', { stock: item })}
         >
             <CardCrud
-                topLeft={`Código de Barras: ${item.codigoBarras}`}
-                bottomLeft={`Produto ID: ${item.produto}`}
+                topLeft={`Produto: ${item.produto.descricao}`}
+                bottomLeft={`Código de Barras: ${item.codigoBarras}`}
                 rightTop={`Quantidade: ${item.quantidade}`}
                 rightBottom={`Vencimento: ${new Date(item.dataVencimento).toLocaleDateString()}`}
             />
@@ -105,7 +114,7 @@ export const Stocks = ({ navigation }: { navigation: any }) => {
                 <Search
                     value={search}
                     setValue={setSearch}
-                    placeholder="Pesquisar por código de barras ou observação"
+                    placeholder="Pesquisar por produto, código de barras ou observação"
                 />
             </View>
 

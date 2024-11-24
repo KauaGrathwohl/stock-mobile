@@ -22,7 +22,7 @@ type DrawerMenuItem = {
 };
 
 const menuItems: Array<DrawerMenuItem> = [
-    { name: "Home", label: "Home", Icon: 'home', component: TabRoutes },
+    { name: "Home", label: "Home", Icon: 'home', component: Home },
     { name: "Lotes", label: "Lotes", Icon: 'archive', component: Stocks },
     { name: "Produtos", label: "Produtos", Icon: 'box', component: Products },
     { name: "Categorias", label: "Categorias", Icon: 'list', component: Categories },
