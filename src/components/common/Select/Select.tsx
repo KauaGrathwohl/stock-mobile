@@ -82,26 +82,31 @@ export default function Select({
       </View>
 
       {isDropdownOpen && (
-        <View style={styles.dropdown}>
-          {allowSearch && (
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Buscar..."
-              value={searchText}
-              onChangeText={handleSearch}
+        <View style={styles.dropdownContainer}>
+          <View style={styles.dropdown}>
+            {allowSearch && (
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Buscar..."
+                value={searchText}
+                onChangeText={handleSearch}
+              />
+            )}
+            <FlatList
+              data={options}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.item}
+                  onPress={() => handleSelect(item)}
+                >
+                  <Text style={styles.itemText}>
+                    {typeof item === "object" ? item[labelKey] : item}
+                  </Text>
+                </TouchableOpacity>
+              )}
             />
-          )}
-          {options.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.item}
-              onPress={() => handleSelect(item)}
-            >
-              <Text style={styles.itemText}>
-                {typeof item === "object" ? item[labelKey] : item}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          </View>
         </View>
       )}
     </View>
@@ -110,8 +115,8 @@ export default function Select({
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "space-around",
     marginVertical: 10,
+    zIndex: 1,
   },
   label: {
     marginBottom: 8,
@@ -124,31 +129,51 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     backgroundColor: "#fff",
+    zIndex: 1,
+
   },
   inputText: {
     fontSize: 16,
     color: "#333",
+    zIndex: 1,
+
+  },
+  dropdownContainer: {
+    position: "absolute",
+    top: 60, // Ajuste dependendo da altura do input
+    left: 0,
+    right: 0,
+    zIndex: 10, // Certifique-se de que fique acima de outros elementos
   },
   dropdown: {
-    marginTop: 10,
+    maxHeight: 200,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
     backgroundColor: "#fff",
+    overflow: "hidden",
+    zIndex: 1,
+
   },
   searchInput: {
     borderBottomWidth: 1,
     borderColor: "#ccc",
     padding: 10,
     fontSize: 16,
+    zIndex: 1,
+
   },
   item: {
     padding: 10,
     borderBottomWidth: 1,
     borderColor: "#f0f0f0",
+    zIndex: 1,
+
   },
   itemText: {
     fontSize: 16,
     color: "#333",
+    zIndex: 1,
+
   },
 });

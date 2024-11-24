@@ -61,8 +61,7 @@ export const Categories = ({ navigation, route }: { navigation: any; route: any}
         }
     }, [valueSearch, items]);
 
-    useEffect(() => {
-        
+    useEffect(() => {  
         if (responseGetCategories?.data?.categories) {
             setItems(responseGetCategories?.data?.categories);
             setFilteredData(responseGetCategories?.data?.categories);

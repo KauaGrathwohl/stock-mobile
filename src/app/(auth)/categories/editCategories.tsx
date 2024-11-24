@@ -40,6 +40,9 @@ export const EditCategories = ({ route, navigation }: { route: any; navigation: 
             console.error('Erro ao realizar requisição:', error);
             Alert.alert('Erro', 'Ocorreu um erro ao atualizar a categoria.');
         }
+        finally{
+            navigation.goBack();
+        }
     };
 
     return (
