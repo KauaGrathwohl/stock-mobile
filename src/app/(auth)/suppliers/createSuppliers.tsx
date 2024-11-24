@@ -67,6 +67,9 @@ export const CreateSuppliers = ({ navigation, route }: { navigation: any; route:
         } catch (error) {
             Alert.alert("Erro", "Ocorreu um erro ao criar o fornecedor!");
         }
+        finally{
+            navigation.goBack();
+        }
     };
 
     const renderItem = ({ item }: { item: InputField }) => (

@@ -44,11 +44,7 @@ export const CreateCategories = ({ navigation }: { navigation: any }) => {
         const body = {
             descricao: inputs[0]?.value,
         };
-
-        console.log("Dados enviados:", body, "URL:", url);
-
         try {
-            // Realiza a requisição POST
             await fetchDataPostCategorie(url, {
                 method: "POST",
                 headers,

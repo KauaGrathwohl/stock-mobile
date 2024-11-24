@@ -35,10 +35,12 @@ export const EditCategories = ({ route, navigation }: { route: any; navigation: 
             }
 
             Alert.alert('Sucesso', 'Categoria atualizada com sucesso!');
-            navigation.navigate('Categorias', { refresh: true }); // Navega para a lista com atualização
         } catch (error) {
             console.error('Erro ao realizar requisição:', error);
             Alert.alert('Erro', 'Ocorreu um erro ao atualizar a categoria.');
+        }
+        finally{
+            navigation.goBack();
         }
     };
 
