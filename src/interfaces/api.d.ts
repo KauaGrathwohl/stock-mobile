@@ -142,8 +142,7 @@ export interface Lote {
     dataFabricacao: string;
     dataVencimento: string;
     observacoes: string;
-    createdAt: string;
-    updatedAt: string;
+    produto: Produto;
 }
 
 export interface EntradaSaida {
