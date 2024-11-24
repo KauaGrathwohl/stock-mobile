@@ -153,6 +153,9 @@ export default function StockFlow() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.cardTitle}>
+        <Text style={styles.h1}>Movimentações</Text>
+      </View>
       <FlatList
         data={movimentacoes}
         keyExtractor={(item) => String(item.id)}
@@ -193,10 +196,10 @@ const styles = StyleSheet.create({
   },
   movementItem: {
     backgroundColor: "#fff",
-    padding: 15,
+    padding: 16,
     marginVertical: 5,
     marginHorizontal: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 3,
@@ -229,5 +232,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 5,
+  },
+  h1: {
+    fontSize: 32,
+    marginBottom: 16,
+    fontWeight: 'bold',
+  },
+  cardTitle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingTop: 32,
+    paddingHorizontal: 16,
+    width: '100%',
   },
 });
