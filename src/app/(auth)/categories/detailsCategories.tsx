@@ -74,7 +74,7 @@ export const DetailsCategories = ({ route, navigation }: { route: any; navigatio
             setCategory(responseGetCategoryById.data?.category);
             setCategoryKeys(Object.keys(responseGetCategoryById.data.category) as (keyof Category)[]);
         } 
-    })
+    }, [responseGetCategoryById])
 
     const renderSkeleton = () => (
         <View style={styles.skeletonContainer}>
