@@ -1,39 +1,30 @@
 import { Actions } from '@/src/components/common/Actions';
 import { Button } from '@/src/components/common/Button';
 import { Input } from '@/src/components/common/Input'; // Usando seu componente Input
+import { useAuth } from '@/src/hooks/useAuth';
+import { useFetch } from '@/src/hooks/useFetch';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 
-interface Item {
-    id: string;
-    name: string;
-    quantity: number;
-    expirationDate: string;
-}
+export const EditCategories =  ({ route, navigation }: { route: any; navigation: any }) => {
+    const { category } = route.params;
+    const { empresa, dataLogin } = useAuth();
+    const [_, fetchDataUpdateCategories] = useFetch();
+    const [ dataDescricao, setDataDescricao ] = useState(category.descricao)
 
-export const EditCategories = ({ route, navigation }: { route: any; navigation: any }) => {
-    const { item } = route.params;
-
-    const [name, setName] = useState(item.name);
-    const [quantity, setQuantity] = useState(String(item.quantity));
-    const [expirationDate, setExpirationDate] = useState(item.expirationDate);
-
+    const fetchCategories = async () => {
+        const url = `${process.env.EXPO_PUBLIC_API_URL}/categoria/${category.id}?empresa=${empresa?.id}`;
+        const headers = { Authorization: `Bearer ${dataLogin?.token}` };
+        const body = JSON.stringify({
+            "descricao": dataDescricao
+        })
+        await fetchDataUpdateCategories(url, { headers, method: 'PUT', body });
+    };
     const handleSave = () => {
-        if (!name || !quantity || !expirationDate) {
-            Alert.alert('Erro', 'Todos os campos são obrigatórios!');
-            return;
-        }
+        console.log(dataDescricao)
+        fetchCategories();
+        navigation.navigate('Categorias', { refresh: true }); 
 
-        const updatedItem = {
-            id: item.id,
-            name,
-            quantity: parseInt(quantity, 10),
-            expirationDate,
-        };
-
-        console.log('Item atualizado:', updatedItem);
-
-        navigation.goBack();
     };
 
     return (
@@ -44,47 +35,8 @@ export const EditCategories = ({ route, navigation }: { route: any; navigation: 
                 <Input
                     label="Nome"
                     placeholder="Digite o nome"
-                    value={name}
-                    onChangeText={setName}
-                />
-
-                <Input
-                    label="Quantidade"
-                    placeholder="Digite a quantidade"
-                    keyboardType="numeric"
-                    value={quantity}
-                    onChangeText={setQuantity}
-                />
-
-                <Input
-                    label="Data de Validade"
-                    placeholder="Digite a data de validade"
-                    value={expirationDate}
-                    onChangeText={setExpirationDate}
-                />
-                 <Input
-                    label="Data de Validade"
-                    placeholder="Digite a data de validade"
-                    value={expirationDate}
-                    onChangeText={setExpirationDate}
-                />
-                 <Input
-                    label="Data de Validade"
-                    placeholder="Digite a data de validade"
-                    value={expirationDate}
-                    onChangeText={setExpirationDate}
-                />
-                 <Input
-                    label="Data de Validade"
-                    placeholder="Digite a data de validade"
-                    value={expirationDate}
-                    onChangeText={setExpirationDate}
-                />
-                 <Input
-                    label="Data de Validade"
-                    placeholder="Digite a data de validade"
-                    value={expirationDate}
-                    onChangeText={setExpirationDate}
+                    value={dataDescricao}
+                    onChangeText={setDataDescricao}
                 />
             </ScrollView>
 

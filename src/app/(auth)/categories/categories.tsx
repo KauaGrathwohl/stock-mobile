@@ -2,83 +2,81 @@ import { Button } from '@/src/components/common/Button';
 import { CardCrud } from '@/src/components/common/CardCrud';
 import { Search } from '@/src/components/common/Search';
 import { useAuth } from '@/src/hooks/useAuth';
+import { useFetch } from '@/src/hooks/useFetch';
 import { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, View, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { StyleSheet, View, FlatList, TouchableOpacity, Alert, Text } from 'react-native';
 
-interface DataItem {
-    id: string;
-    key: string;
-    value: string;
-}
-interface InputField {
-    id: string;
-    label: string;
-    value: string;
-    placeholder: string;
-    keyboardType: string;
+export interface CategoriesResponse {
+    categories: Category[];
 }
 
-export const Categories = ({ navigation, route }: { navigation: any; route: any }) => {
-    const auth = useAuth();
-    const [valueSearch, setValueSearch] = useState('');
-    const [filteredData, setFilteredData] = useState<DataItem[][]>([]);
-    const [items, setItems] = useState<DataItem[][]>([]); // Estado inicial para a lista principal
+export interface Category {
+    id: number;
+    descricao: string;
+    createdAt: string;
+    updatedAt: string;
+}
 
-    const [inputsToCreate] = useState<InputField[]>([
-        { id: '1', label: 'Nome', value: '', placeholder: 'Digite o nome da categoria', keyboardType: 'default' },
-    ]);
+export const Categories = ({ navigation, route }: { navigation: any; route: any}) => {
+    const { empresa, dataLogin } = useAuth();
+    const [responseGetCategories, fetchDataGetCategories] = useFetch<CategoriesResponse>();
 
-    const initialItems: DataItem[] = [
-        { id: '1', key: 'nome do produto', value: 'Coca-cola' },
-        { id: '2', key: 'quantidade', value: '10' },
-        { id: '3', key: 'validade', value: '10/04/2024' },
-        { id: '4', key: 'validade', value: '10/04/2024' },
-        { id: '5', key: 'validade', value: '10/04/2024' },
-        { id: '6', key: 'validade', value: '10/04/2024' },
-        { id: '7', key: 'validade', value: '10/04/2024' },
-        { id: '8', key: 'validade', value: '10/04/2024' },
-    ];
+    const [items, setItems] = useState<Category[]>([]);
+    const [filteredData, setFilteredData] = useState<Category[]>([]);
+    const [valueSearch, setValueSearch] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(true); 
 
-    // Preenchendo os dados iniciais
+    const fetchCategories = async () => {
+        setLoading(true); 
+        console.log('Fetching categories...');
+        const url = `${process.env.EXPO_PUBLIC_API_URL}/categoria?empresa=${empresa?.id}`;
+        const headers = { Authorization: `Bearer ${dataLogin?.token}` };
+
+        await fetchDataGetCategories(url, { headers, method: 'GET' });
+
+      
+
+        setLoading(false); 
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            if (route.params?.refresh) {
+                fetchCategories(); // Recarrega as categorias
+            }
+            fetchCategories();
+        }, [empresa, dataLogin])
+    );
+
     useEffect(() => {
-        const filledItems = Array(30).fill(initialItems);
-        setItems(filledItems);
-        setFilteredData(filledItems);
-    }, []);
-
-    // Atualizando dados filtrados com base na pesquisa
-    useEffect(() => {
-        if (valueSearch === '') {
+        if (valueSearch.trim() === '') {
             setFilteredData(items);
         } else {
             const lowercasedValue = valueSearch.toLowerCase();
-            const filtered = items.filter((itemGroup) =>
-                itemGroup.some(
-                    (item) =>
-                        item.key.toLowerCase().includes(lowercasedValue) ||
-                        item.value.toString().toLowerCase().includes(lowercasedValue)
-                )
+            const filtered = items.filter((item) =>
+                item.descricao.toLowerCase().includes(lowercasedValue)
             );
             setFilteredData(filtered);
         }
     }, [valueSearch, items]);
 
-    const handleSaveNewCategory = useCallback(
-        (newInputs: InputField[]) => {
-            console.log("Inputs recebidos do ItemCreate:", newInputs);
-            const newCategory = newInputs.map((input) => ({
-                id: Math.random().toString(),
-                key: input.label,
-                value: input.value,
-            }));
-    
-            const updatedItems = [...items, newCategory];
-            setItems(updatedItems);
-            setFilteredData(updatedItems);
-            Alert.alert('Sucesso', 'Categoria adicionada com sucesso!');
-        },
-        [items] // Dependência: só será recriado quando `items` mudar
+    useEffect(() => {
+        
+        if (responseGetCategories?.data?.categories) {
+            setItems(responseGetCategories?.data?.categories);
+            setFilteredData(responseGetCategories?.data?.categories);
+        } 
+    })
+
+    const renderSkeleton = () => (
+        <View style={styles.skeletonCard}>
+            <View style={styles.skeletonText} />
+            <View style={styles.skeletonTextSmall} />
+            <View style={styles.skeletonLine} />
+        </View>
     );
+
     return (
         <View style={styles.container}>
             <View style={styles.searchContainer}>
@@ -91,38 +89,47 @@ export const Categories = ({ navigation, route }: { navigation: any; route: any 
                 />
             </View>
 
-            <FlatList
-                data={filteredData}
-                keyExtractor={(_, index) => index.toString()}
-                contentContainerStyle={styles.contentContainer}
-                renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => navigation.navigate('DetailsCategories', { item })}>
-                        <CardCrud
-                            topLeft={item?.[0]?.value}
-                            bottomLeft={item?.[1]?.value}
-                            rightTop={item?.[2]?.key}
-                            rightBottom={item?.[2]?.value}
-                        />
-                    </TouchableOpacity>
-                )}
-            />
+            {loading ? (
+                <FlatList
+                    data={Array(5).fill({})} 
+                    keyExtractor={(_, index) => index.toString()}
+                    contentContainerStyle={styles.contentContainer}
+                    renderItem={renderSkeleton}
+                />
+            ) : (
+                <FlatList
+                    data={filteredData}
+                    keyExtractor={(item) => item.id.toString()}
+                    contentContainerStyle={styles.contentContainer}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            onPress={() =>
+                                navigation.navigate('DetailsCategories', { category: item })
+                            }
+                        >
+                            <CardCrud
+                                topLeft={item.descricao}
+                                bottomLeft={`Criado em: ${new Date(
+                                    item.createdAt
+                                ).toLocaleDateString()}`}
+                                rightTop={`ID: ${item.id}`}
+                                rightBottom={`Atualizado: ${new Date(
+                                    item.updatedAt
+                                ).toLocaleDateString()}`}
+                            />
+                        </TouchableOpacity>
+                    )}
+                />
+            )}
 
             <Button
                 title="Adicionar"
                 icon="add"
-                onPress={() =>
-                    navigation.navigate('CreateCategories', {
-                        item: {
-                            title: 'Nova Categoria',
-                            initialInputs: inputsToCreate,
-                            onSave: handleSaveNewCategory, // Callback para atualizar categorias
-                        },
-                    })
-                }
+                onPress={() => navigation.navigate('CreateCategories')}
             />
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -137,5 +144,33 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         gap: 16,
+    },
+    skeletonCard: {
+        height: 100,
+        backgroundColor: '#e0e0e0',
+        borderRadius: 8,
+        padding: 16,
+        justifyContent: 'space-between',
+        marginBottom: 16,
+    },
+    skeletonText: {
+        width: '70%',
+        height: 20,
+        backgroundColor: '#c0c0c0',
+        borderRadius: 4,
+    },
+    skeletonTextSmall: {
+        width: '50%',
+        height: 15,
+        backgroundColor: '#c0c0c0',
+        borderRadius: 4,
+        marginTop: 8,
+    },
+    skeletonLine: {
+        width: '90%',
+        height: 15,
+        backgroundColor: '#d0d0d0',
+        borderRadius: 4,
+        marginTop: 8,
     },
 });

@@ -1,9 +1,10 @@
 import { Categories } from "./categories";
-import { CreateCategories } from './createCategories'
-import { EditCategories } from './editCategories'
-import { DetailsCategories } from './detailsCategories'
+import { CreateCategories } from "./createCategories";
+import { DetailsCategories } from "./detailsCategories";
+import { EditCategories } from "./editCategories";
 
-export {
+
+ export  {
     Categories,
     CreateCategories,
     EditCategories,
