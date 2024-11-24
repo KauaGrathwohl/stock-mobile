@@ -1,36 +1,44 @@
 import { CardLoteVencimento } from '@/src/components/pages/Home/CardLoteVencimento';
 import { useAuth } from '@/src/hooks/useAuth';
 import { useFetch } from '@/src/hooks/useFetch';
+import { Saida } from '@/src/interfaces/api';
 import { Feather } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
+import {
+    LineChart,
+} from "react-native-chart-kit";
 import { ScrollView } from 'react-native-gesture-handler';
 
 type Lote = {
+  id: number;
+  codigoBarras: string;
+  status: string;
+  dataFabricacao: string;
+  dataVencimento: string;
+  produto: {
     id: number;
-    codigoBarras: string;
-    status: string;
-    dataFabricacao: string;
-    dataVencimento: string;
-    produto: {
-        id: number;
-        descricao: string;
-    };
+    descricao: string;
+  }
 };
 
 export default function Home() {
-    if (true) return;
-
     const { empresa, dataLogin, user } = useAuth();
+    if( true ) return
 
-    const [responseLoteVencido, fetchDataLoteVencido] = useFetch<{ arrExpiredLotes: Lote[] }>();
-    const [responseLoteVencimento, fetchDataLoteVencimento] = useFetch<{ arrExpiringLotes: Lote[] }>();
-    const [responseSaida, fetchDataSaida] = useFetch<{ totalSaidas: any[] }>();
+    const [responseLoteVencido, fetchDataLoteVencido] = useFetch<{
+        arrExpiredLotes: Lote[];
+    }>();
+    const [responseLoteVencimento, fetchDataLoteVencimento] = useFetch<{
+        arrExpiringLotes: Lote[];
+    }>();
+    const [responseSaida, fetchDataSaida] = useFetch<{
+        totalSaidas: any[];
+    }>();
 
     const [lotesVencidos, setLotesVencidos] = useState<Lote[]>([]);
     const [lotesVencimento, setLotesVencimento] = useState<Lote[]>([]);
-    const [totalSaidas, setTotalSaidas] = useState<{ produto: string; quantidade: number }[]>([]);
+    const [totalSaidas, setTotalSaidas] = useState<Saida[]>([]);
 
     const [isLoadingLotesVencidos, setIsLoadingLotesVencidos] = useState(false);
     const [isLoadingLotesVencimento, setIsLoadingLotesVencimento] = useState(false);
@@ -78,11 +86,7 @@ export default function Home() {
 
     useEffect(() => {
         if (responseSaida.data?.totalSaidas) {
-            const sanitizedSaidas = responseSaida.data.totalSaidas.map((saida) => ({
-                produto: saida?.produto ?? 'Produto Desconhecido',
-                quantidade: Number(saida?.quantidade ?? 0), // Garante que o valor seja numérico
-            }));
-            setTotalSaidas(sanitizedSaidas);
+            setTotalSaidas(responseSaida.data.totalSaidas);
         }
         if (responseLoteVencimento.data?.arrExpiringLotes) {
             setLotesVencimento(responseLoteVencimento.data.arrExpiringLotes);
@@ -93,7 +97,7 @@ export default function Home() {
     }, [
         responseSaida.data?.totalSaidas,
         responseLoteVencimento.data?.arrExpiringLotes,
-        responseLoteVencido.data?.arrExpiredLotes,
+        responseLoteVencido.data?.arrExpiredLotes
     ]);
 
     return (
@@ -116,51 +120,110 @@ export default function Home() {
             </View>
             {isLoadingTotalSaidas ? (
                 <ActivityIndicator size="large" color={'#000'} />
-            ) : totalSaidas.length ? (
-                <View style={styles.containerView}>
-                    <LineChart
-                        data={{
-                            labels: totalSaidas.map((saida) => saida.produto),
-                            datasets: [
-                                {
-                                    data: totalSaidas.map((saida) => saida.quantidade),
+            ) : (
+                totalSaidas.length ? (
+                    <View style={styles.containerView}>
+                        <LineChart
+                            data={{
+                                labels: totalSaidas.map((saida) => saida?.produto ?? ''),
+                                datasets: [
+                                    {
+                                        data: totalSaidas.map((saida) => (saida?.quantidade ?? 0)),
+                                    },
+                                ],
+                            }}
+                            width={Dimensions.get("window").width - 32} // Largura do gráfico
+                            height={220} // Altura do gráfico
+                            yAxisLabel="" // Prefixo opcional no eixo Y
+                            yAxisSuffix="" // Sufixo opcional no eixo Y
+                            yAxisInterval={1} // Intervalo do eixo Y
+                            chartConfig={{
+                                backgroundColor: "#D4D4D4",
+                                backgroundGradientFrom: "#BABABA",
+                                backgroundGradientTo: "#D4D4D4",
+                                decimalPlaces: 0, // Sem casas decimais
+                                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                style: {
+                                    borderRadius: 16
                                 },
-                            ],
-                        }}
-                        width={Dimensions.get('window').width - 32}
-                        height={220}
-                        yAxisLabel=""
-                        yAxisSuffix=""
-                        chartConfig={{
-                            backgroundColor: '#D4D4D4',
-                            backgroundGradientFrom: '#BABABA',
-                            backgroundGradientTo: '#D4D4D4',
-                            decimalPlaces: 0,
-                            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                            style: {
-                                borderRadius: 16,
-                            },
-                            propsForDots: {
-                                r: '6',
-                                strokeWidth: '2',
-                                stroke: '#D4D4D4',
-                            },
-                        }}
-                        bezier
-                        style={{
-                            marginVertical: 8,
-                            borderRadius: 16,
-                        }}
+                                propsForDots: {
+                                    r: "6",
+                                    strokeWidth: "2",
+                                    stroke: "#D4D4D4"
+                                }
+                            }}
+                            bezier
+                            style={{
+                                marginVertical: 8,
+                                borderRadius: 16
+                            }}
+                        />
+                    </View>
+                ) : (
+                    <View style={styles.notFound}>
+                        <Text style={styles.notFoundText}>Nenhuma saída encontrada.</Text>
+                    </View>
+                )
+            )}
+
+            <View style={styles.cardVencimentoTitle}>
+                <Text style={styles.h2}>Lotes prestes a vencer</Text>
+                <TouchableOpacity style={styles.refresh} onPress={() => fetchLotesVencimento()}>
+                    <Feather name="refresh-cw" size={24} color="black" />
+                </TouchableOpacity>
+            </View>
+            {isLoadingLotesVencimento ? (
+                <ActivityIndicator size="large" color={'#000'} />
+            ) : (
+                lotesVencimento.length ? (
+                    <View style={styles.containerView}>
+                    {lotesVencimento.map((lote) => (
+                        <CardLoteVencimento
+                            key={lote.id}
+                            id={lote.id}
+                            codigoBarras={lote.codigoBarras}
+                            status={lote.status}
+                            dataFabricacao={lote.dataFabricacao}
+                            dataVencimento={lote.dataVencimento}
+                            produto={lote.produto}
+                        />
+                    ))}
+                    </View>
+                ) : (
+                    <View style={styles.notFound}>
+                        <Text style={styles.notFoundText}>Nenhuma lote a vencer encontrado.</Text>
+                    </View>
+                )
+            )}
+
+            <View style={styles.cardVencimentoTitle}>
+                <Text style={styles.h2}>Lotes vencidos</Text>
+                <TouchableOpacity style={styles.refresh} onPress={() => fetchLotesVencidos()}>
+                    <Feather name="refresh-cw" size={24} color="black" />
+                </TouchableOpacity>
+            </View>
+            {isLoadingLotesVencidos ? (
+                <ActivityIndicator size="large" color={'#000'} />
+            ) : lotesVencidos.length ? (
+                <View style={styles.containerView}>
+                {lotesVencidos.map((lote) => (
+                    <CardLoteVencimento
+                        key={lote.id}
+                        id={lote.id}
+                        codigoBarras={lote.codigoBarras}
+                        status={lote.status}
+                        dataFabricacao={lote.dataFabricacao}
+                        dataVencimento={lote.dataVencimento}
+                        produto={lote.produto}
                     />
+                ))}
                 </View>
             ) : (
                 <View style={styles.notFound}>
-                    <Text style={styles.notFoundText}>Nenhuma saída encontrada.</Text>
+                    <Text style={styles.notFoundText}>Nenhum lote vencido encontrado.</Text>
                 </View>
             )}
-
-            {/* Restante do conteúdo para lotes vencidos e próximos a vencer */}
         </ScrollView>
     );
 }
