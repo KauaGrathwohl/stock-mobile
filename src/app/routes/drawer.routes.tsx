@@ -1,7 +1,6 @@
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import { Feather } from '@expo/vector-icons';
 
-import TabRoutes from './tab.routes';
 import Products from '../(auth)/products';
 import { Categories } from '@/src/app/(auth)/categories';
 import { Suppliers } from '@/src/app/(auth)/suppliers';
@@ -11,6 +10,8 @@ import Profile from '../(auth)/profile';
 import { useAuth } from '@/src/hooks/useAuth';
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
+import { StockFlow } from '../(auth)/stockFlow';
+import Home from '../(auth)/home';
 
 type DrawerMenuItem = {
     name: string;
@@ -21,11 +22,12 @@ type DrawerMenuItem = {
 };
 
 const menuItems: Array<DrawerMenuItem> = [
-    { name: "Home", label: "Home", Icon: 'home', component: TabRoutes },
+    { name: "Home", label: "Home", Icon: 'home', component: Home },
     { name: "Lotes", label: "Lotes", Icon: 'archive', component: Stock },
     { name: "Produtos", label: "Produtos", Icon: 'box', component: Products },
     { name: "Categorias", label: "Categorias", Icon: 'list', component: Categories },
     { name: "Fornecedores", label: "Fornecedores", Icon: 'users', component: Suppliers },
+    { name: "Movimentações", label: "Movimentações", Icon: 'move', component: StockFlow },
     { name: "Perfil", label: "Perfil", Icon: 'user', component: Profile },
 ];
 

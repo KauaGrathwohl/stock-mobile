@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     alignSelf: "center",
-    width: "90%",
+    width: "100%",
     margin: 20,
   },
   button: {
