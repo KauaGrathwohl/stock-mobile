@@ -13,14 +13,14 @@ interface ModalExcludeProps {
     visible: boolean; // Controla a visibilidade do modal
     onCancel: () => void; // Função chamada ao cancelar
     onConfirm: () => void; // Função chamada ao confirmar
-    item: any; // Nome do item a ser excluído
+    nomeItem: string; // Nome do item a ser excluído
 }
 
 export function ModalExclude({
     visible,
     onCancel,
     onConfirm,
-    item,
+    nomeItem,
 }: ModalExcludeProps) {
     return (
         <Modal
@@ -32,14 +32,14 @@ export function ModalExclude({
                 <View style={styles.modal}>
                     <Text style={styles.title}>Atenção</Text>
                     <Text style={styles.message}>
-                        Você tem certeza que deseja deletar o lote {item?.observacao || item?.[0].value}?{" "}
+                        Você tem certeza que deseja deletar "{nomeItem}"
                         Essa ação é irreversível.
                     </Text>
                     <View style={styles.actions}>
                        <Button title='Cancelar' onPress={onCancel}>
 
                        </Button>
-                       <Button title='Excluir'onPress={onCancel}>
+                       <Button title='Excluir'onPress={onConfirm}>
                         </Button>
                     </View>
                 </View>

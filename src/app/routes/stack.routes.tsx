@@ -1,9 +1,8 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { CreateCategories, Categories, DetailsCategories, EditCategories } from '../(auth)/categories';
 import DrawerRoutes from './drawer.routes';
 import {CreateSuppliers, DetailsSuppliers, EditSuppliers} from "@/src/app/(auth)/suppliers";
+import { DetailsCategories,CreateCategories,EditCategories } from '../(auth)/categories'
 import { CreateStockFlow } from '../(auth)/stockFlow';
-
 
 const Stack = createStackNavigator();
 

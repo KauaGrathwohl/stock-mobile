@@ -1,90 +1,57 @@
 import { Actions } from '@/src/components/common/Actions';
 import { Button } from '@/src/components/common/Button';
 import { Input } from '@/src/components/common/Input'; // Usando seu componente Input
+import { useAuth } from '@/src/hooks/useAuth';
+import { useFetch } from '@/src/hooks/useFetch';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 
-interface Item {
-    id: string;
-    name: string;
-    quantity: number;
-    expirationDate: string;
-}
-
 export const EditCategories = ({ route, navigation }: { route: any; navigation: any }) => {
-    const { item } = route.params;
+    const { category } = route.params; // Categoria recebida por parâmetro
+    const { empresa, dataLogin } = useAuth(); // Dados de autenticação e empresa
+    const [responseUpdateCategory, fetchDataUpdateCategories] = useFetch(); // Hook para requisição
+    const [dataDescricao, setDataDescricao] = useState(category.descricao); // Estado do input
 
-    const [name, setName] = useState(item.name);
-    const [quantity, setQuantity] = useState(String(item.quantity));
-    const [expirationDate, setExpirationDate] = useState(item.expirationDate);
-
-    const handleSave = () => {
-        if (!name || !quantity || !expirationDate) {
-            Alert.alert('Erro', 'Todos os campos são obrigatórios!');
+    const handleSave = async () => {
+        if (!dataDescricao.trim()) {
+            Alert.alert('Erro', 'O campo descrição é obrigatório!');
             return;
         }
 
-        const updatedItem = {
-            id: item.id,
-            name,
-            quantity: parseInt(quantity, 10),
-            expirationDate,
+        const url = `${process.env.EXPO_PUBLIC_API_URL}/categoria/${category.id}?empresa=${empresa?.id}`;
+        const headers = {
+            Authorization: `Bearer ${dataLogin?.token}`,
+            'Content-Type': 'application/json',
         };
+        const body = JSON.stringify({ descricao: dataDescricao });
 
-        console.log('Item atualizado:', updatedItem);
+        try {
+            await fetchDataUpdateCategories(url, { headers, method: 'PUT', body });
 
-        navigation.goBack();
+            if (responseUpdateCategory?.error) {
+                console.error('Erro ao atualizar categoria:', responseUpdateCategory.error);
+                Alert.alert('Erro', 'Não foi possível atualizar a categoria.');
+                return;
+            }
+
+            Alert.alert('Sucesso', 'Categoria atualizada com sucesso!');
+            navigation.navigate('Categorias', { refresh: true }); // Navega para a lista com atualização
+        } catch (error) {
+            console.error('Erro ao realizar requisição:', error);
+            Alert.alert('Erro', 'Ocorreu um erro ao atualizar a categoria.');
+        }
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Editar Item</Text>
+            <Text style={styles.title}>Editar Categoria</Text>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <Input
                     label="Nome"
                     placeholder="Digite o nome"
-                    value={name}
-                    onChangeText={setName}
-                />
-
-                <Input
-                    label="Quantidade"
-                    placeholder="Digite a quantidade"
-                    keyboardType="numeric"
-                    value={quantity}
-                    onChangeText={setQuantity}
-                />
-
-                <Input
-                    label="Data de Validade"
-                    placeholder="Digite a data de validade"
-                    value={expirationDate}
-                    onChangeText={setExpirationDate}
-                />
-                 <Input
-                    label="Data de Validade"
-                    placeholder="Digite a data de validade"
-                    value={expirationDate}
-                    onChangeText={setExpirationDate}
-                />
-                 <Input
-                    label="Data de Validade"
-                    placeholder="Digite a data de validade"
-                    value={expirationDate}
-                    onChangeText={setExpirationDate}
-                />
-                 <Input
-                    label="Data de Validade"
-                    placeholder="Digite a data de validade"
-                    value={expirationDate}
-                    onChangeText={setExpirationDate}
-                />
-                 <Input
-                    label="Data de Validade"
-                    placeholder="Digite a data de validade"
-                    value={expirationDate}
-                    onChangeText={setExpirationDate}
+                    value={dataDescricao}
+                    onChangeText={setDataDescricao}
                 />
             </ScrollView>
 

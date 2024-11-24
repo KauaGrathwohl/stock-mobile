@@ -2,7 +2,9 @@ import { Actions } from '@/src/components/common/Actions';
 import { Button } from '@/src/components/common/Button';
 import { ModalExclude } from '@/src/components/common/ModalExclude';
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
+import { useAuth } from '@/src/hooks/useAuth';
+import { useFetch } from '@/src/hooks/useFetch';
 
 interface DataItem {
     id: string;
@@ -10,18 +12,40 @@ interface DataItem {
     value: string | number;
 }
 
-export const DetailsSuppliers = ({ route, navigation }: { route: any, navigation: any }) => {
+export const DetailsSuppliers = ({ route, navigation }: { route: any; navigation: any }) => {
     const { item } = route.params;
+    const { empresa, dataLogin } = useAuth();
     const [modalVisible, setModalVisible] = useState(false);
+    const [responseDeleteSupplier, fetchDataDeleteSupplier] = useFetch();
 
     const handleCancel = () => {
         setModalVisible(false);
-        console.log("Exclusão cancelada.");
+        console.log('Exclusão cancelada.');
     };
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         setModalVisible(false);
-        console.log("Item excluído.");
+        const url = `${process.env.EXPO_PUBLIC_API_URL}/fornecedor/${item[0].id}?empresa=${empresa?.id}`;
+        const headers = {
+            Authorization: `Bearer ${dataLogin?.token}`,
+            'Content-Type': 'application/json',
+        };
+
+        try {
+            await fetchDataDeleteSupplier(url, { method: 'DELETE', headers });
+
+            if (responseDeleteSupplier?.error) {
+                console.error('Erro ao excluir fornecedor:', responseDeleteSupplier.error);
+                Alert.alert('Erro', 'Falha ao excluir fornecedor!');
+                return;
+            }
+
+            Alert.alert('Sucesso', 'Fornecedor excluído com sucesso!');
+            navigation.goBack();
+        } catch (error) {
+            console.error('Erro ao excluir fornecedor:', error);
+            Alert.alert('Erro', 'Ocorreu um erro ao excluir o fornecedor!');
+        }
     };
 
     return (
@@ -30,7 +54,7 @@ export const DetailsSuppliers = ({ route, navigation }: { route: any, navigation
                 visible={modalVisible}
                 onCancel={handleCancel}
                 onConfirm={handleConfirm}
-                item={item}
+                nomeItem="Fornecedor"
             />
             <Text style={styles.title}>Detalhes do Fornecedor</Text>
             <FlatList
@@ -45,12 +69,16 @@ export const DetailsSuppliers = ({ route, navigation }: { route: any, navigation
                 )}
             />
             <Actions>
-                <Button title='Excluir' icon='trash' onPress={() => setModalVisible(true)} />
-                <Button title='Editar' icon='pencil' onPress={() => navigation.navigate('SupplierEdit', { item: item })} />
+                <Button title="Excluir" icon="trash" onPress={() => setModalVisible(true)} />
+                <Button
+                    title="Editar"
+                    icon="pencil"
+                    onPress={() => navigation.navigate('EditSuppliers', { item: item })}
+                />
             </Actions>
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
