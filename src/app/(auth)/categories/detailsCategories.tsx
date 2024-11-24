@@ -10,8 +10,8 @@ interface DataItem {
     value: string | number;
 }
 
-export default function ItemDetails({ route, navigation }: { route: any, navigation:any }) {
-    const { item } = route.params; // Recebe o grupo de itens (array de `DataItem`)
+export  const  DetailsCategories = ({ route, navigation }: { route: any, navigation:any }) => {
+    const { item } = route.params;
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleCancel = () => {
@@ -29,19 +29,19 @@ export default function ItemDetails({ route, navigation }: { route: any, navigat
                 visible={modalVisible}
                 onCancel={handleCancel}
                 onConfirm={handleConfirm}
-                itemName="Coca-cola" // Nome do item a ser excluído
+                item={item}
             />
             <Text style={styles.title}>Detalhes do Item</Text>
             <FlatList
                 data={item} 
                 keyExtractor={(dataItem: DataItem) => dataItem.id}
+                contentContainerStyle={styles.listContent}
                 renderItem={({ item: dataItem }) => (
                     <View style={styles.itemContainer}>
                         <Text style={styles.label}>Campo: {dataItem.key}</Text>
                         <Text style={styles.label}>Valor: {dataItem.value}</Text>
                     </View>
                 )}
-                contentContainerStyle={styles.listContent}
             />
             <Actions>
                 <Button title='Excluir' icon='trash' onPress={ () => setModalVisible(true)}></Button>

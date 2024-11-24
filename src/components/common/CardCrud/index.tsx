@@ -3,22 +3,23 @@ import { View, Text } from "react-native";
 import { styles } from "./styles";
 
 interface CardCrudProps {
-    value: {
-        key: string;
-        value: string | number | null;
-    }[];
+   topLeft?: string | null ;
+   bottomLeft?: string | null;
+   rightTop?: string | null;
+   rightBottom?: string | null;
 }
 
-export const CardCrud = ({ value }: CardCrudProps) => {
+export const CardCrud = ({ topLeft,bottomLeft,rightTop,rightBottom}: CardCrudProps) => {
+
     return (
         <View style={styles.container}>
             <View style={styles.leftSection}>
-                <Text style={styles.productName}>{value[0]?.value}</Text>
-                <Text style={styles.productQuantity}>{value[1]?.value}</Text>
+                <Text style={styles.productName}>{topLeft ? topLeft : ''}</Text>
+                <Text style={styles.productQuantity}>{bottomLeft ? bottomLeft : ''}</Text>
             </View>
             <View style={styles.rightSection}>
-                <Text style={styles.validityLabel}>{value[2]?.key}</Text>
-                <Text style={styles.validityDate}>{value[2]?.value}</Text>
+                <Text style={styles.validityLabel}>{rightTop ? rightTop : ''}</Text>
+                <Text style={styles.validityDate}>{rightBottom ? rightBottom : ''}</Text>
             </View>
         </View>
     );
