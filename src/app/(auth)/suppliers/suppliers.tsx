@@ -48,7 +48,7 @@ export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
             });
         };
         fetchSuppliers();
-    }, [auth.user?.empresa.id, auth.dataLogin?.token, fetchData]);
+    }, [auth.user?.empresa.id, auth.dataLogin?.token]);
 
     useEffect(() => {
         if (response.data && Array.isArray(response.data.fornecedores)) {
