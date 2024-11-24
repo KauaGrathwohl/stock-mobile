@@ -11,7 +11,7 @@ interface Item {
     expirationDate: string;
 }
 
-export const ItemEdit = ({ route, navigation }: { route: any; navigation: any }) => {
+export const EditCategories = ({ route, navigation }: { route: any; navigation: any }) => {
     const { item } = route.params;
 
     const [name, setName] = useState(item.name);
@@ -62,6 +62,30 @@ export const ItemEdit = ({ route, navigation }: { route: any; navigation: any })
                     value={expirationDate}
                     onChangeText={setExpirationDate}
                 />
+                 <Input
+                    label="Data de Validade"
+                    placeholder="Digite a data de validade"
+                    value={expirationDate}
+                    onChangeText={setExpirationDate}
+                />
+                 <Input
+                    label="Data de Validade"
+                    placeholder="Digite a data de validade"
+                    value={expirationDate}
+                    onChangeText={setExpirationDate}
+                />
+                 <Input
+                    label="Data de Validade"
+                    placeholder="Digite a data de validade"
+                    value={expirationDate}
+                    onChangeText={setExpirationDate}
+                />
+                 <Input
+                    label="Data de Validade"
+                    placeholder="Digite a data de validade"
+                    value={expirationDate}
+                    onChangeText={setExpirationDate}
+                />
             </ScrollView>
 
             <Actions>
@@ -80,7 +104,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginVertical: 16,
+        paddingVertical: 16,
         textAlign: 'center',
     },
     scrollContainer: {
