@@ -17,7 +17,8 @@ export default function StackRoutes() {
 
             'DetailsSuppliers',
             'EditSuppliers',
-            'CreateSuppliers'];
+            'CreateSuppliers'
+        ];
 
         return namePages.includes(route.name);
     };

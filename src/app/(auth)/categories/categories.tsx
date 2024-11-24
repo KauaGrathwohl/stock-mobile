@@ -96,7 +96,7 @@ export const Categories = ({ navigation, route }: { navigation: any; route: any 
                 keyExtractor={(_, index) => index.toString()}
                 contentContainerStyle={styles.contentContainer}
                 renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => navigation.navigate('ItemDetails', { item })}>
+                    <TouchableOpacity onPress={() => navigation.navigate('DetailsCategories', { item })}>
                         <CardCrud
                             topLeft={item?.[0]?.value}
                             bottomLeft={item?.[1]?.value}
@@ -111,7 +111,7 @@ export const Categories = ({ navigation, route }: { navigation: any; route: any 
                 title="Adicionar"
                 icon="add"
                 onPress={() =>
-                    navigation.navigate('ItemCreate', {
+                    navigation.navigate('CreateCategories', {
                         item: {
                             title: 'Nova Categoria',
                             initialInputs: inputsToCreate,

@@ -45,7 +45,7 @@ export  const  DetailsCategories = ({ route, navigation }: { route: any, navigat
             />
             <Actions>
                 <Button title='Excluir' icon='trash' onPress={ () => setModalVisible(true)}></Button>
-                <Button title='Editar'  icon='pencil' onPress={() => navigation.navigate('ItemEdit', { item: item })}></Button>
+                <Button title='Editar'  icon='pencil' onPress={() => navigation.navigate('EditCategories', { item: item })}></Button>
             </Actions>
             
         </View>

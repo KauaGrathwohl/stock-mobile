@@ -3,8 +3,8 @@ import { Feather } from '@expo/vector-icons';
 
 import TabRoutes from './tab.routes';
 import Products from '../(auth)/products';
-import { Categories } from '../(auth)/categories/categories';
-import { Suppliers } from '../(auth)/suppliers/suppliers';
+import { Categories } from '@/src/app/(auth)/categories';
+import { Suppliers } from '@/src/app/(auth)/suppliers';
 import Stock from '../(auth)/stock';
 import Profile from '../(auth)/profile';
 
