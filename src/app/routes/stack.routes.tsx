@@ -1,8 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { CreateCategories, Categories, DetailsCategories, EditCategories } from '../(auth)/categories';
 import DrawerRoutes from './drawer.routes';
 import {CreateSuppliers, DetailsSuppliers, EditSuppliers} from "@/src/app/(auth)/suppliers";
-
+import { DetailsCategories,CreateCategories,EditCategories } from '../(auth)/categories'
 
 const Stack = createStackNavigator();
 
@@ -17,8 +16,7 @@ export default function StackRoutes() {
 
             'DetailsSuppliers',
             'EditSuppliers',
-            'CreateSuppliers'
-        ];
+            'CreateSuppliers'];
 
         return namePages.includes(route.name);
     };

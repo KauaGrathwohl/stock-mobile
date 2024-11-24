@@ -14,10 +14,9 @@ interface InputField {
     keyboardType: string;
 }
 
-export const CreateCategories = ({ navigation, route }: { navigation: any; route: any }) => {
+export const CreateCategories =  ({ navigation }: { navigation: any }) => {
     const { empresa, dataLogin, user } = useAuth();
     const [responsePostCategorie, fetchDataPostCategorie] = useFetch();
-
     const [inputs, setInputs] = useState<InputField[]>([{ id: "1", label: "Nome", value: "", placeholder: "Digite o nome Da Categoria", keyboardType: "default" }]);
     const handleInputChange = (id: string, text: string) => {setInputs((prevInputs) =>prevInputs.map((input) => input.id === id ? { ...input, value: text } : input))};
 
@@ -26,10 +25,10 @@ export const CreateCategories = ({ navigation, route }: { navigation: any; route
             Alert.alert("Erro", "Todos os campos são obrigatórios!");
             return;
         }
-        console.log("Dados salvos:", inputs);
         const url = `${process.env.EXPO_PUBLIC_API_URL}/categoria?empresa=${empresa?.id}`;
-
         const body = JSON.stringify({'descricao': inputs[0]?.value})  
+        console.log("Dados salvos:", inputs, 'url: ',  url, 'Body:', body);
+
         fetchDataPostCategorie(url, {
             body,
             headers: { Authorization: `Bearer ${dataLogin?.token}` },
@@ -63,7 +62,6 @@ export const CreateCategories = ({ navigation, route }: { navigation: any; route
                 keyboardShouldPersistTaps="handled"
             />
 
-            {/* Botões fixados na parte inferior */}
             <View style={styles.actionsContainer}>
                 <Actions>
                     <Button title="Cancelar" onPress={() => navigation.goBack()} />
