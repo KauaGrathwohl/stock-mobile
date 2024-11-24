@@ -1,10 +1,12 @@
 import { Button } from '@/src/components/common/Button';
 import { Input } from '@/src/components/common/Input';
 import { Actions } from '@/src/components/common/Actions';
+import ProductSelect from '@/src/components/pages/Products/ProductSelect';
 import { useAuth } from '@/src/hooks/useAuth';
 import { useFetch } from '@/src/hooks/useFetch';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Produto } from '@/src/interfaces/api';
 
 export const CreateStocks = ({ navigation }: { navigation: any }) => {
     const { empresa, dataLogin } = useAuth();
@@ -15,10 +17,10 @@ export const CreateStocks = ({ navigation }: { navigation: any }) => {
     const [dataFabricacao, setDataFabricacao] = useState('');
     const [dataVencimento, setDataVencimento] = useState('');
     const [observacoes, setObservacoes] = useState('');
-    const [produto, setProduto] = useState('');
+    const [selectedProduto, setSelectedProduto] = useState<Produto | null>(null);
 
     const handleSave = async () => {
-        if (!codigoBarras || !quantidade || !dataFabricacao || !dataVencimento || !produto) {
+        if (!codigoBarras || !quantidade || !dataFabricacao || !dataVencimento || !selectedProduto) {
             Alert.alert('Erro', 'Todos os campos são obrigatórios!');
             return;
         }
@@ -34,7 +36,7 @@ export const CreateStocks = ({ navigation }: { navigation: any }) => {
             dataFabricacao,
             dataVencimento,
             observacoes,
-            produto: parseInt(produto),
+            produto: selectedProduto.id, 
         });
 
         try {
@@ -54,7 +56,11 @@ export const CreateStocks = ({ navigation }: { navigation: any }) => {
         <View style={styles.container}>
             <Text style={styles.title}>Criar Lote</Text>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <Input label="Código de Barras" value={codigoBarras} onChangeText={setCodigoBarras} />
+                <Input
+                    label="Código de Barras"
+                    value={codigoBarras}
+                    onChangeText={setCodigoBarras}
+                />
                 <Input
                     label="Quantidade"
                     value={quantidade}
@@ -78,11 +84,9 @@ export const CreateStocks = ({ navigation }: { navigation: any }) => {
                     value={observacoes}
                     onChangeText={setObservacoes}
                 />
-                <Input
-                    label="Produto ID"
-                    value={produto}
-                    onChangeText={setProduto}
-                    keyboardType="numeric"
+                <ProductSelect
+                    onChange={(produto) => setSelectedProduto(produto)}
+                    placeholder="Selecione um produto"
                 />
             </ScrollView>
             <Actions>
