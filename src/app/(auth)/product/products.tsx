@@ -2,14 +2,16 @@
 import { useAuth } from '@/src/hooks/useAuth';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function Products() {
+export const Products = () => {
     const auth = useAuth();;
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Produtos!</Text>
-        </View>
-    )
+    // return (
+    //     <View style={styles.container}>
+    //         <Text style={styles.title}>Produtos!</Text>
+    //     </View>
+    // )
+    return <View></View>
+
 }
 
 const styles = StyleSheet.create({
