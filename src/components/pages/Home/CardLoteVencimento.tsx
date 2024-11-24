@@ -31,8 +31,8 @@ export const CardLoteVencimento = ({
     <TouchableOpacity
       style={styles.card}
       onPress={() => {
-        console.log('CardLoteVencimento')
-        console.log('id', id)
+        console.log('CardLoteVencimento');
+        console.log('id', id);
       }}
     >
       <Badge
@@ -40,10 +40,15 @@ export const CardLoteVencimento = ({
         icon={icon}
       />
       <View style={styles.container}>
-        <Text style={styles.textPrincipal}>
-          {produto?.descricao}
-        </Text>
-        <Text style={styles.textPrincipal}>
+        <View style={styles.leftContainer}>
+          <Text style={styles.p}>
+            {produto?.descricao}
+          </Text>
+          <Text style={styles.small}>
+            Código: {codigoBarras}
+          </Text>
+        </View>
+        <Text style={styles.date}>
           {dataVencimento}
         </Text>
       </View>
@@ -53,21 +58,20 @@ export const CardLoteVencimento = ({
 
 const styles = StyleSheet.create({
   card: {
-    width: 380,
-    height: 52,
+    width: '100%',
+    height: 80,
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 8,
     gap: 16,
-    backgroundColor: '#d9d9d9',
-    borderRadius: 100,
+    backgroundColor: '#ffff',
+    borderRadius: 8,
     shadowColor: '#080808',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 2,
-    boxShadow: '0px 2px 4px rgba(8, 8, 8, 0.15)',
+    elevation: 3,
     marginBottom: 16,
   },
   container: {
@@ -76,14 +80,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    height: 36,
   },
-  textPrincipal: {
-    fontFamily: 'Poppins',
-    fontStyle: 'normal',
+  leftContainer: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  p: {
     fontWeight: '800',
     fontSize: 16,
     lineHeight: 20,
     color: '#080808',
-  }
+  },
+  small: {
+    fontWeight: '600',
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#080808',
+    marginTop: 4,
+  },
+  date: {
+    fontWeight: '600',
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#080808',
+  },
 });

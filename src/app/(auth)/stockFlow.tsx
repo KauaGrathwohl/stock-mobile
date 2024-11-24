@@ -19,10 +19,14 @@ import FlowFilter from "@/src/components/pages/StockFlow/FlowFilter";
 
 export default function StockFlow() {
   const auth = useAuth();
-  const [tipoMovimentacao, setTipoMovimentacao] = useState<"entrada" | "saida">("entrada");
+  const [tipoMovimentacao, setTipoMovimentacao] = useState<"entrada" | "saida">(
+    "entrada"
+  );
   const [isModalVisible, setModalVisible] = useState(false);
   const [movimentacoes, setMovimentacoes] = useState<EntradaSaida[]>([]);
-  const [movimentacoesResponse, getMovimentacoes] = useFetch<EntradaResponse | SaidaResponse>();
+  const [movimentacoesResponse, getMovimentacoes] = useFetch<
+    EntradaResponse | SaidaResponse
+  >();
 
   const searchMovimentacoes = async () => {
     const url = `${process.env.EXPO_PUBLIC_API_URL}/${tipoMovimentacao}?empresa=${auth.empresa?.id}`;
@@ -33,7 +37,7 @@ export default function StockFlow() {
     const result =
       (movimentacoesResponse.data as EntradaResponse)?.entradas ||
       (movimentacoesResponse.data as SaidaResponse)?.saidas;
-    
+
     setMovimentacoes(result);
   }, [movimentacoesResponse]);
 
@@ -43,8 +47,14 @@ export default function StockFlow() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.cardTitle}>
+        <Text style={styles.h1}>Movimentações</Text>
+      </View>
       
-      <FlowFilter selected={tipoMovimentacao} setSelected={setTipoMovimentacao} />
+      <FlowFilter
+        selected={tipoMovimentacao}
+        setSelected={setTipoMovimentacao}
+      />
 
       <FlatList
         data={movimentacoes}
@@ -54,18 +64,20 @@ export default function StockFlow() {
         renderItem={({ item }) => (
           <View style={styles.movementItem}>
             <View style={styles.textContainer}>
-              <Text style={styles.itemText}>Item: {item.produto.descricao}</Text>
+              <Text style={styles.itemText}>
+                Item: {item.produto.descricao}
+              </Text>
               <Text style={styles.quantityText}>
                 Quantidade: {item.quantidade}
               </Text>
             </View>
             <View style={styles.iconContainer}>
-            {tipoMovimentacao === 'entrada' ? (
-              <Feather name="trending-up" size={24} color="green" />
-            ) : (
-              <Feather name="trending-down" size={24} color="red" />
-            )}
-          </View>
+              {tipoMovimentacao === "entrada" ? (
+                <Feather name="trending-up" size={24} color="green" />
+              ) : (
+                <Feather name="trending-down" size={24} color="red" />
+              )}
+            </View>
           </View>
         )}
         ListEmptyComponent={
@@ -96,14 +108,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
   },
   movementItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: "#fff",
-    padding: 15,
+    padding: 16,
     marginVertical: 5,
     marginHorizontal: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 3,
@@ -142,5 +154,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 5,
+  },
+  h1: {
+    fontSize: 32,
+    marginBottom: 16,
+    fontWeight: "bold",
+  },
+  cardTitle: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+    paddingTop: 32,
+    paddingHorizontal: 16,
+    width: "100%",
   },
 });
