@@ -4,8 +4,7 @@ import {CreateSuppliers, DetailsSuppliers, EditSuppliers} from "@/src/app/(auth)
 import { DetailsCategories,CreateCategories,EditCategories } from '../(auth)/categories'
 import { DetailsStocks, CreateStocks, EditStocks } from '../(auth)/stocks';
 import { DetailsProducts, EditProducts, CreateProducts } from '../(auth)/product';
-
-import { CreateStockFlow } from '../(auth)/stockFlow';
+import { CreateStockFlow, DetailsStockFlow } from '../(auth)/stockFlow';
 
 const Stack = createStackNavigator();
 
@@ -27,7 +26,10 @@ export default function StackRoutes() {
             
             'DetailsProducts',
             'EditProducts',
-            'CreateProducts'
+            'CreateProducts',
+
+            'CreateStockFlow',
+            'DetailsStockFlow',
         ];
 
         return namePages.includes(route.name);
@@ -49,18 +51,17 @@ export default function StackRoutes() {
             <Stack.Screen name="EditSuppliers"     component={EditSuppliers} options={{ headerTitle: "Edição do Fornecedor", headerBackTitle: "Voltar"}} />
             <Stack.Screen name="CreateSuppliers"   component={CreateSuppliers} options={{ headerTitle: "Criação do Fornecedor", headerBackTitle: "Voltar"}} />
 
-<<<<<<< HEAD
             <Stack.Screen name="DetailsProducts"  component={DetailsProducts} options={{ headerTitle: "Detalhes do Produto", headerBackTitle: "Voltar"}} />
             <Stack.Screen name="EditProducts"     component={EditProducts} options={{ headerTitle: "Edição do Produto", headerBackTitle: "Voltar"}} />
             <Stack.Screen name="CreateProducts"   component={CreateProducts} options={{ headerTitle: "Criação do Produto", headerBackTitle: "Voltar"}} />
-=======
+
             <Stack.Screen name="DetailsStock"      component={DetailsStocks} options={{ headerTitle: "Detalhes do Lote", headerBackTitle: "Voltar"}} />
             <Stack.Screen name="EditStock"         component={EditStocks} options={{ headerTitle: "Edição do Lote", headerBackTitle: "Voltar"}} />
             <Stack.Screen name="CreateStock"       component={CreateStocks} options={{ headerTitle: "Criação do Lote", headerBackTitle: "Voltar"}} />
->>>>>>> 0823b7c6056ce21af365bbaba211075a5c46f35c
 
             <Stack.Screen name="CreateStockFlow"   component={CreateStockFlow} options={{ headerTitle: "Criar Movimentação", headerBackTitle: "Voltar"}} />
-        
+            <Stack.Screen name="DetailsStockFlow"   component={DetailsStockFlow} options={{ headerTitle: "Criar Movimentação", headerBackTitle: "Voltar"}} />
+
         </Stack.Navigator>
     );
 }

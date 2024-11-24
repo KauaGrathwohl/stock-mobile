@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import {
   EntradaResponse,
@@ -67,7 +67,7 @@ export default function StockFlow({ navigation }: { navigation: any }) {
           initialNumToRender={10}
           maxToRenderPerBatch={5}
           renderItem={({ item }) => (
-            <View style={styles.movementItem}>
+            <TouchableOpacity style={styles.movementItem} onPress={() => navigation.navigate('DetailsStockFlow', { movimentacao: item, tipoMovimentacao })}>
               <View style={styles.textContainer}>
                 <Text style={styles.itemText}>
                   Item: {item.produto.descricao}
@@ -83,7 +83,7 @@ export default function StockFlow({ navigation }: { navigation: any }) {
                   <Feather name="trending-down" size={24} color="red" />
                 )}
               </View>
-            </View>
+            </TouchableOpacity>
           )}
           ListEmptyComponent={
             <Text style={styles.emptyText}>
