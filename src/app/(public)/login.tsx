@@ -9,6 +9,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { Feather } from "@expo/vector-icons";
 
 const schema = z.object({
     email: z.string().email({ message: 'Email inválido' }),
@@ -44,7 +45,10 @@ export default function Login () {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>StockSense</Text>
+            <View style={styles.logo}>
+                <Feather name="package" size={128} color="#000" />
+                <Text style={styles.title}>StockSense</Text>
+            </View>
             <Text style={styles.text}>Bem-vindo!</Text>
             <Controller
                 control={control}
@@ -79,10 +83,6 @@ export default function Login () {
                 title="Entrar"
                 onPress={handleSubmit(onSubmit)}
             />
-            {/* <Button
-                title="Criar nova conta"
-                onPress={() => router.replace('/register' as any)}
-            /> */}
         </View>
     )
 }
@@ -94,8 +94,14 @@ const styles = StyleSheet.create({
         padding: 32,
         gap: 16
     },
+    logo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 32,
+        width: '100%'
+    },
     title: {
-        fontSize: 32,
+        fontSize: 40,
         fontWeight: 'bold',
     },
     text: {

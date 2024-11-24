@@ -7,11 +7,6 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {
     LineChart,
-    BarChart,
-    PieChart,
-    ProgressChart,
-    ContributionGraph,
-    StackedBarChart
 } from "react-native-chart-kit";
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -112,56 +107,56 @@ export default function Home() {
                         <Text style={styles.h1}>Olá, {user.nome}!</Text>
                     </View>
                 ) : (
-                    <ActivityIndicator size="large" />
+                    <ActivityIndicator size="large" color={'#000'} />
                 )}
             </View>
 
             <View style={styles.cardVencimentoTitle}>
-                <Text style={styles.h2}>Total de Saídas</Text>
+                <Text style={styles.h2}>Saída de produtos</Text>
                 <TouchableOpacity style={styles.refresh} onPress={() => fetchLotesTotalSaidas()}>
                     <Feather name="refresh-cw" size={24} color="black" />
                 </TouchableOpacity>
             </View>
             {isLoadingTotalSaidas ? (
-                <ActivityIndicator size="large" />
+                <ActivityIndicator size="large" color={'#000'} />
             ) : (
                 totalSaidas.length ? (
                     <View style={styles.containerView}>
                         <LineChart
-                        data={{
-                            labels: totalSaidas.map((saida) => saida?.produto ?? ''),
-                            datasets: [
-                                {
-                                    data: totalSaidas.map((saida) => (saida?.quantidade ?? 0)),
+                            data={{
+                                labels: totalSaidas.map((saida) => saida?.produto ?? ''),
+                                datasets: [
+                                    {
+                                        data: totalSaidas.map((saida) => (saida?.quantidade ?? 0)),
+                                    },
+                                ],
+                            }}
+                            width={Dimensions.get("window").width - 32} // Largura do gráfico
+                            height={220} // Altura do gráfico
+                            yAxisLabel="" // Prefixo opcional no eixo Y
+                            yAxisSuffix="" // Sufixo opcional no eixo Y
+                            yAxisInterval={1} // Intervalo do eixo Y
+                            chartConfig={{
+                                backgroundColor: "#D4D4D4",
+                                backgroundGradientFrom: "#BABABA",
+                                backgroundGradientTo: "#D4D4D4",
+                                decimalPlaces: 0, // Sem casas decimais
+                                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                style: {
+                                    borderRadius: 16
                                 },
-                            ],
-                        }}
-                        width={Dimensions.get("window").width - 32} // Largura do gráfico
-                        height={220} // Altura do gráfico
-                        yAxisLabel="" // Prefixo opcional no eixo Y
-                        yAxisSuffix="" // Sufixo opcional no eixo Y
-                        yAxisInterval={1} // Intervalo do eixo Y
-                        chartConfig={{
-                            backgroundColor: "#D4D4D4",
-                            backgroundGradientFrom: "#BABABA",
-                            backgroundGradientTo: "#D4D4D4",
-                            decimalPlaces: 0, // Sem casas decimais
-                            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                            style: {
+                                propsForDots: {
+                                    r: "6",
+                                    strokeWidth: "2",
+                                    stroke: "#D4D4D4"
+                                }
+                            }}
+                            bezier
+                            style={{
+                                marginVertical: 8,
                                 borderRadius: 16
-                            },
-                            propsForDots: {
-                                r: "6",
-                                strokeWidth: "2",
-                                stroke: "#D4D4D4"
-                            }
-                        }}
-                        bezier
-                        style={{
-                            marginVertical: 8,
-                            borderRadius: 16
-                        }}
+                            }}
                         />
                     </View>
                 ) : (
@@ -172,13 +167,13 @@ export default function Home() {
             )}
 
             <View style={styles.cardVencimentoTitle}>
-                <Text style={styles.h2}>Lotes a Vencer</Text>
+                <Text style={styles.h2}>Lotes prestes a vencer</Text>
                 <TouchableOpacity style={styles.refresh} onPress={() => fetchLotesVencimento()}>
                     <Feather name="refresh-cw" size={24} color="black" />
                 </TouchableOpacity>
             </View>
             {isLoadingLotesVencimento ? (
-                <ActivityIndicator size="large" />
+                <ActivityIndicator size="large" color={'#000'} />
             ) : (
                 lotesVencimento.length ? (
                     <View style={styles.containerView}>
@@ -202,13 +197,13 @@ export default function Home() {
             )}
 
             <View style={styles.cardVencimentoTitle}>
-                <Text style={styles.h2}>Lotes Vencidos</Text>
+                <Text style={styles.h2}>Lotes vencidos</Text>
                 <TouchableOpacity style={styles.refresh} onPress={() => fetchLotesVencidos()}>
                     <Feather name="refresh-cw" size={24} color="black" />
                 </TouchableOpacity>
             </View>
             {isLoadingLotesVencidos ? (
-                <ActivityIndicator size="large" />
+                <ActivityIndicator size="large" color={'#000'} />
             ) : lotesVencidos.length ? (
                 <View style={styles.containerView}>
                 {lotesVencidos.map((lote) => (

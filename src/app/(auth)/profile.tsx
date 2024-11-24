@@ -4,7 +4,8 @@ import { Input } from '@/src/components/common/Input';
 import { useAuth } from '@/src/hooks/useAuth';
 import { useFetch } from '@/src/hooks/useFetch';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { Controller, set, useForm } from 'react-hook-form';
 import { StyleSheet, Text, View } from 'react-native';
 import { z } from 'zod';
 
@@ -17,14 +18,20 @@ const schema = z.object({
 type ProfileFormSchema = z.infer<typeof schema>;
 
 export default function Profile() {
-    const { empresa, user } = useAuth();
+    const auth = useAuth();
+    const { empresa, dataLogin, user } = useAuth();
     const [response, fetchData] = useFetch();
-    const { control, handleSubmit, formState: { errors } } = useForm<ProfileFormSchema>({
+
+    const [userName, setUserName] = useState<string>(user?.nome!);
+    const [userEmail, setUserEmail] = useState<string>(user?.email!);
+    const [userCpf, setUserCpf] = useState<string>(user?.cpf!);
+
+    const { control, handleSubmit, reset, formState: { errors } } = useForm<ProfileFormSchema>({
         resolver: zodResolver(schema),
         defaultValues: {
-            nome: user?.nome,
-            email: user?.email,
-            cpf: user?.cpf
+            nome: userName,
+            email: userEmail,
+            cpf: userCpf
         }
     });
 
@@ -35,15 +42,43 @@ export default function Profile() {
 
         const url = `${process.env.EXPO_PUBLIC_API_URL}/usuario/${user?.id}?empresa=${empresa?.id}`;
         const body = JSON.stringify(data);
-        const headers = { 'Content-Type': 'application/json' };
-        await fetchData(url, { body, headers, method: 'PUT' });  
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${dataLogin?.token}`
+        };
+        await fetchData(url, { body, headers, method: 'PUT' });
+
+        setUserName(data.nome);
+        setUserEmail(data.email);
+        setUserCpf(data.cpf);
     };
+
+    useEffect(() => {
+        if (!response.data){
+            return;
+        }
+
+        console.log('response.data', response.data);
+
+        auth?.login({
+            token: dataLogin?.token!,
+            empresa: empresa?.id!,
+            usuario: user?.id!,
+            menssage: ''
+        });
+
+        reset({
+            nome: userName,
+            email: userEmail,
+            cpf: userCpf
+        })
+    }, [response.data])
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Meu Perfil</Text>
             <View style={styles.cardProfile}>
-                <Text style={styles.h2}>{user?.nome}</Text>
+                <Text style={styles.h2}>{userName}</Text>
                 <Text style={styles.h3}>Cargo: {user?.cargo?.descricao}</Text>
                 <Text style={styles.h3}>{empresa?.descricao}</Text>
                 <Controller
@@ -93,9 +128,7 @@ export default function Profile() {
                 <View style={styles.buttonContainer}>
                     <Button
                         title="Salvar"
-                        onPress={handleSubmit((data) => {
-                            console.log(data);
-                        })}
+                        onPress={handleSubmit(onSubmit)}
                     />
                 </View>
             </View>

@@ -14,7 +14,7 @@ export default function TabRoutes() {
             headerShown: false
         }}>
             <Tab.Screen
-                name="Home"
+                name="Tab"
                 component={Home}
                 options={{
                     tabBarIcon: ({ color, size }) => <Feather name='home' color={color} size={size}/>,
@@ -26,7 +26,7 @@ export default function TabRoutes() {
                 component={StockFlow}
                 options={{
                     tabBarIcon: ({ color, size }) => <Feather name='move' color={color} size={size}/>,
-                    tabBarLabel: 'Stock Flow'
+                    tabBarLabel: 'Movimentações'
                 }}
             />
         </Tab.Navigator>

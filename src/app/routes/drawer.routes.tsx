@@ -10,6 +10,7 @@ import Profile from '../(auth)/profile';
 
 import { useAuth } from '@/src/hooks/useAuth';
 import { router } from 'expo-router';
+import { StyleSheet, Text, View } from 'react-native';
 
 type DrawerMenuItem = {
     name: string;
@@ -20,12 +21,12 @@ type DrawerMenuItem = {
 };
 
 const menuItems: Array<DrawerMenuItem> = [
-    { name: "TabRoutes", label: "Home", Icon: 'home', component: TabRoutes },
-    { name: "Stock", label: "Stock", Icon: 'archive', component: Stock },
-    { name: "Products", label: "Products", Icon: 'box', component: Products },
-    { name: "Categories", label: "Categories", Icon: 'list', component: Categories },
-    { name: "Suppliers", label: "Suppliers", Icon: 'users', component: Suppliers },
-    { name: "Profile", label: "Profile", Icon: 'user', component: Profile },
+    { name: "Home", label: "Home", Icon: 'home', component: TabRoutes },
+    { name: "Lotes", label: "Lotes", Icon: 'archive', component: Stock },
+    { name: "Produtos", label: "Produtos", Icon: 'box', component: Products },
+    { name: "Categorias", label: "Categorias", Icon: 'list', component: Categories },
+    { name: "Fornecedores", label: "Fornecedores", Icon: 'users', component: Suppliers },
+    { name: "Perfil", label: "Perfil", Icon: 'user', component: Profile },
 ];
 
 const Drawer = createDrawerNavigator();
@@ -41,8 +42,7 @@ export default function DrawerRoutes() {
     return (
         <Drawer.Navigator
             screenOptions={{
-                drawerActiveTintColor: '#000',
-                headerTitle: 'StockSense'
+                drawerActiveTintColor: '#000'
             }}
             drawerContent={(props) => (
                 <CustomDrawerContent {...props} onLogout={handleLogout} />
@@ -65,9 +65,19 @@ export default function DrawerRoutes() {
 
 function CustomDrawerContent(props: any) {
     const { onLogout } = props;
+    const auth = useAuth();
 
     return (
         <DrawerContentScrollView {...props}>
+            <View style={styles.userHeader}>
+                <Feather name="package" size={56} color="#000" />
+                <View style={styles.userInfo}>
+                    <Text style={styles.userName}>{auth?.user?.nome}</Text>
+                    <Text style={styles.userDetails}>{auth?.user?.cargo?.descricao}</Text>
+                    <Text style={styles.userDetails}>{auth?.user?.empresa?.descricao}</Text>
+                </View>
+            </View>
+
             <DrawerItemList {...props} />
             <DrawerItem
                 label="Logout"
@@ -77,3 +87,26 @@ function CustomDrawerContent(props: any) {
         </DrawerContentScrollView>
     );
 }
+
+const styles = StyleSheet.create({
+    userHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#D4D4D4',
+        padding: 16,
+        borderRadius: 16,
+        marginBottom: 16,
+    },
+    userInfo: {
+        marginLeft: 12,
+    },
+    userName: {
+        color: '#000',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    userDetails: {
+        color: '#000',
+        fontSize: 14,
+    },
+});

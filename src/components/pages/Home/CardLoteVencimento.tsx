@@ -58,7 +58,7 @@ export const CardLoteVencimento = ({
 
 const styles = StyleSheet.create({
   card: {
-    width: 380,
+    width: '100%',
     height: 80,
     flexDirection: 'row',
     alignItems: 'center',
