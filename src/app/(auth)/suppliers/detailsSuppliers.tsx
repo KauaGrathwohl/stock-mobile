@@ -46,7 +46,7 @@ export const DetailsSuppliers = ({ route, navigation }: { route: any, navigation
             />
             <Actions>
                 <Button title='Excluir' icon='trash' onPress={() => setModalVisible(true)} />
-                <Button title='Editar' icon='pencil' onPress={() => navigation.navigate('SupplierEdit', { item: item })} />
+                <Button title='Editar' icon='pencil' onPress={() => navigation.navigate('EditSuppliers', { item: item })} />
             </Actions>
         </View>
     );

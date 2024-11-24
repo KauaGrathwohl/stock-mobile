@@ -2,6 +2,7 @@ import { Button } from '@/src/components/common/Button';
 import { CardCrud } from '@/src/components/common/CardCrud';
 import { Search } from '@/src/components/common/Search';
 import { useAuth } from '@/src/hooks/useAuth';
+import { useFetch } from '@/src/hooks/useFetch';
 import { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, View, FlatList, TouchableOpacity, Alert } from 'react-native';
 
@@ -10,6 +11,7 @@ interface DataItem {
     key: string;
     value: string;
 }
+
 interface InputField {
     id: string;
     label: string;
@@ -18,11 +20,19 @@ interface InputField {
     keyboardType: string;
 }
 
-export const Suppliers = ({ navigation, route }: { navigation: any; route: any }) => {
+interface Supplier {
+    id: string;
+    descricao: string;
+    telefone: string;
+    cnpj: string;
+}
+
+export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
     const auth = useAuth();
     const [valueSearch, setValueSearch] = useState('');
     const [filteredData, setFilteredData] = useState<DataItem[][]>([]);
-    const [items, setItems] = useState<DataItem[][]>([]); // Estado inicial para a lista principal
+    const [items, setItems] = useState<DataItem[][]>([]);
+    const [response, fetchData] = useFetch<{ fornecedores: Supplier[] }>();
 
     const [inputsToCreate] = useState<InputField[]>([
         { id: '1', label: 'Nome', value: '', placeholder: 'Digite o nome do fornecedor', keyboardType: 'default' },
@@ -30,21 +40,29 @@ export const Suppliers = ({ navigation, route }: { navigation: any; route: any }
         { id: '3', label: 'CNPJ', value: '', placeholder: 'Digite o CNPJ', keyboardType: 'default' },
     ]);
 
-    const initialItems: DataItem[] = [
-        { id: '1', key: 'nome', value: 'AMBEV LTDA' },
-        { id: '2', key: 'telefone', value: '48988001118' },
-        { id: '3', key: 'cnpj', value: '47515553000140' },
-    ];
-
-    // Preenchendo os dados iniciais
+    useEffect(() => {
+        const fetchSuppliers = async () => {
+            const url = `${process.env.EXPO_PUBLIC_API_URL}/fornecedor?empresa=${auth.user?.empresa.id ?? ''}&skip=0`;
+            await fetchData(url, {
+                headers: { Authorization: `Bearer ${auth.dataLogin?.token ?? ''}` },
+            });
+        };
+        fetchSuppliers();
+    }, [auth.user?.empresa.id, auth.dataLogin?.token, fetchData]);
 
     useEffect(() => {
-        const filledItems = Array(30).fill(initialItems);
-        setItems(filledItems);
-        setFilteredData(filledItems);
-    }, []);
-
-    // Atualizando dados filtrados com base na pesquisa
+        if (response.data && Array.isArray(response.data.fornecedores)) {
+            const suppliers = response.data.fornecedores.map((supplier) => [
+                { id: supplier.id, key: 'Nome', value: supplier.descricao },
+                { id: supplier.id, key: 'Telefone', value: supplier.telefone },
+                { id: supplier.id, key: 'CNPJ', value: supplier.cnpj },
+            ]);
+            setItems(suppliers);
+            setFilteredData(suppliers);
+        } else {
+            console.error('Expected response.data.fornecedores to be an array');
+        }
+    }, [response.data]);
 
     useEffect(() => {
         if (valueSearch === '') {
@@ -76,7 +94,7 @@ export const Suppliers = ({ navigation, route }: { navigation: any; route: any }
             setFilteredData(updatedItems);
             Alert.alert('Sucesso', 'Fornecedor adicionado com sucesso!');
         },
-        [items] // Dependência: só será recriado quando `items` mudar
+        [items]
     );
 
     return (
@@ -96,7 +114,7 @@ export const Suppliers = ({ navigation, route }: { navigation: any; route: any }
                 keyExtractor={(_, index) => index.toString()}
                 contentContainerStyle={styles.contentContainer}
                 renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => navigation.navigate('SupplierDetails', { item })}>
+                    <TouchableOpacity onPress={() => navigation.navigate('DetailsSuppliers', { item })}>
                         <CardCrud
                             topLeft={item?.[0]?.value}
                             bottomLeft={item?.[1]?.value}
@@ -111,18 +129,18 @@ export const Suppliers = ({ navigation, route }: { navigation: any; route: any }
                 title="Adicionar"
                 icon="add"
                 onPress={() =>
-                    navigation.navigate('ItemCreate', {
+                    navigation.navigate('CreateSuppliers', {
                         item: {
                             title: 'Novo Fornecedor',
                             initialInputs: inputsToCreate,
-                            onSave: handleSaveNewSupplier, // Callback para atualizar fornecedores
+                            onSave: handleSaveNewSupplier,
                         },
                     })
                 }
             />
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {

@@ -48,13 +48,12 @@ export default function DrawerRoutes() {
                 <CustomDrawerContent {...props} onLogout={handleLogout} />
             )}
         >
-            {menuItems.map(({ name, label, Icon, component }) => (
+            {menuItems.map(({ name, label, component }) => (
                 <Drawer.Screen
                     key={name}
                     name={name}
                     component={component}
                     options={{
-                        drawerIcon: ({ color, size }) => <Feather name={Icon} color={color} size={size}/>,
                         drawerLabel: label
                     }}
                 />

@@ -1,33 +1,33 @@
 import { Actions } from '@/src/components/common/Actions';
 import { Button } from '@/src/components/common/Button';
-import { Input } from '@/src/components/common/Input'; // Using your Input component
+import { Input } from '@/src/components/common/Input';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 
 interface Supplier {
     id: string;
-    descricao: string;
-    telefone: string;
+    name: string;
+    phone: string;
     cnpj: string;
 }
 
 export const EditSuppliers = ({ route, navigation }: { route: any; navigation: any }) => {
     const { item } = route.params;
 
-    const [descricao, setDescricao] = useState(item.descricao);
-    const [telefone, setTelefone] = useState(item.telefone);
+    const [name, setName] = useState(item.name);
+    const [phone, setPhone] = useState(item.phone);
     const [cnpj, setCnpj] = useState(item.cnpj);
 
     const handleSave = () => {
-        if (!descricao || !telefone || !cnpj) {
+        if (!name || !phone || !cnpj) {
             Alert.alert('Erro', 'Todos os campos são obrigatórios!');
             return;
         }
 
         const updatedSupplier = {
             id: item.id,
-            descricao,
-            telefone,
+            name,
+            phone,
             cnpj,
         };
 
@@ -42,18 +42,18 @@ export const EditSuppliers = ({ route, navigation }: { route: any; navigation: a
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <Input
-                    label="Descrição"
-                    placeholder="Digite a descrição"
-                    value={descricao}
-                    onChangeText={setDescricao}
+                    label="Nome"
+                    placeholder="Digite o nome"
+                    value={name}
+                    onChangeText={setName}
                 />
 
                 <Input
                     label="Telefone"
                     placeholder="Digite o telefone"
                     keyboardType="phone-pad"
-                    value={telefone}
-                    onChangeText={setTelefone}
+                    value={phone}
+                    onChangeText={setPhone}
                 />
 
                 <Input
