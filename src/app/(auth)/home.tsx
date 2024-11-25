@@ -127,7 +127,7 @@ export default function Home() {
                                 labels: totalSaidas.map((saida) => saida?.produto ?? ''),
                                 datasets: [
                                     {
-                                        data: totalSaidas.map((saida) => (saida?.quantidade ?? 0)),
+                                        data: totalSaidas.map((saida) => (saida?.quantidade ? Number(saida.quantidade) : 0)),
                                     },
                                 ],
                             }}
