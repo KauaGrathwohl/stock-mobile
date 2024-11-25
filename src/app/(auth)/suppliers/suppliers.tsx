@@ -43,6 +43,7 @@ export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
     const [filteredData, setFilteredData] = useState<DataItem[][]>([]);
     const [items, setItems] = useState<DataItem[][]>([]);
     const [response, fetchData] = useFetch<{ fornecedores: Supplier[] }>();
+    const [loading, setLoading] = useState<boolean>(true);
 
     const [inputsToCreate] = useState<InputField[]>([
         { id: '1', label: 'Nome', value: '', placeholder: 'Digite o nome do fornecedor', keyboardType: 'default' },
@@ -51,10 +52,12 @@ export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
     ]);
 
     const fetchSuppliers = async () => {
+        setLoading(true);
         const url = `${process.env.EXPO_PUBLIC_API_URL}/fornecedor?empresa=${auth.user?.empresa.id ?? ''}&skip=0`;
         await fetchData(url, {
             headers: { Authorization: `Bearer ${auth.dataLogin?.token ?? ''}` },
         });
+        setLoading(false);
     };
 
     useFocusEffect(
@@ -110,6 +113,14 @@ export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
         [items]
     );
 
+    const renderSkeleton = () => (
+        <View style={styles.skeletonCard}>
+            <View style={styles.skeletonText} />
+            <View style={styles.skeletonTextSmall} />
+            <View style={styles.skeletonLine} />
+        </View>
+    );
+
     return (
         <View style={styles.container}>
             <View style={styles.searchContainer}>
@@ -122,21 +133,30 @@ export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
                 />
             </View>
 
-            <FlatList
-                data={filteredData}
-                keyExtractor={(_, index) => index.toString()}
-                contentContainerStyle={styles.contentContainer}
-                renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => navigation.navigate('DetailsSuppliers', { item })}>
-                        <CardCrud
-                            topLeft={item?.[0]?.value}
-                            bottomLeft={item?.[1]?.value}
-                            rightTop={item?.[2]?.key}
-                            rightBottom={item?.[2]?.value}
-                        />
-                    </TouchableOpacity>
-                )}
-            />
+            {loading ? (
+                <FlatList
+                    data={Array(5).fill({})}
+                    keyExtractor={(_, index) => index.toString()}
+                    contentContainerStyle={styles.contentContainer}
+                    renderItem={renderSkeleton}
+                />
+            ) : (
+                <FlatList
+                    data={filteredData}
+                    keyExtractor={(_, index) => index.toString()}
+                    contentContainerStyle={styles.contentContainer}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => navigation.navigate('DetailsSuppliers', { item })}>
+                            <CardCrud
+                                topLeft={item?.[0]?.value}
+                                bottomLeft={item?.[1]?.value}
+                                rightTop={item?.[2]?.key}
+                                rightBottom={item?.[2]?.value}
+                            />
+                        </TouchableOpacity>
+                    )}
+                />
+            )}
 
             <Button
                 title="Adicionar"
@@ -147,7 +167,7 @@ export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
                             title: 'Novo Fornecedor',
                             initialInputs: inputsToCreate,
                             onSave: handleSaveNewSupplier,
-                            refreshSuppliers: fetchSuppliers, // Pass the callback to refresh suppliers
+                            refreshSuppliers: fetchSuppliers,
                         },
                     })
                 }
@@ -169,5 +189,33 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         gap: 16,
+    },
+    skeletonCard: {
+        height: 100,
+        backgroundColor: '#e0e0e0',
+        borderRadius: 8,
+        padding: 16,
+        justifyContent: 'space-between',
+        marginBottom: 16,
+    },
+    skeletonText: {
+        width: '70%',
+        height: 20,
+        backgroundColor: '#c0c0c0',
+        borderRadius: 4,
+    },
+    skeletonTextSmall: {
+        width: '50%',
+        height: 15,
+        backgroundColor: '#c0c0c0',
+        borderRadius: 4,
+        marginTop: 8,
+    },
+    skeletonLine: {
+        width: '90%',
+        height: 15,
+        backgroundColor: '#d0d0d0',
+        borderRadius: 4,
+        marginTop: 8,
     },
 });
