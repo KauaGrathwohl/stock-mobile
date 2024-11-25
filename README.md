@@ -32,6 +32,8 @@ O **StockSense** utiliza tecnologias modernas para garantir **qualidade, perform
 - **🌐 Backend**:  
   Integração com uma **API REST**, permitindo persistência de dados e conexão com um frontend adicional que compartilha a mesma API.
   
+  [**Repositório da API**](https://github.com/tiago-bitten/stock-back).
+  
   [**Acesse a documentação da API aqui**](https://cloudy-meadow-118088.postman.co/workspace/Stocksense~84f79344-5f09-4a7e-aa74-b5f4065bec9f/collection/24113981-d9e16e76-d2e1-458e-adb1-6202519aadf6?action=share&creator=24113981).
   
   [**Apresentação do projeto**](https://www.canva.com/design/DAGSR1ih9Z4/0Z7FxzxsfqroHTw3j-n0PQ/edit?utm_content=DAGSR1ih9Z4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton).
