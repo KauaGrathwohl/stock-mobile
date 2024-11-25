@@ -1,4 +1,3 @@
-
 import { Button } from '@/src/components/common/Button';
 import { CardCrud } from '@/src/components/common/CardCrud';
 import { Search } from '@/src/components/common/Search';
@@ -6,9 +5,7 @@ import { useAuth } from '@/src/hooks/useAuth';
 import { useFetch } from '@/src/hooks/useFetch';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
-
+import { StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
 
 export interface ProductResponse {
     products: Product[];
@@ -34,42 +31,54 @@ export interface Categoria {
     updatedAt: string;
 }
 
-export const Products =  ({ navigation, route }: { navigation: any; route: any}) => {
-    const auth = useAuth();;
+export const Products = ({ navigation }: { navigation: any }) => {
     const { empresa, dataLogin } = useAuth();
     const [responseGetProducts, fetchDataGetProducts] = useFetch<ProductResponse>();
 
     const [items, setItems] = useState<Product[]>([]);
     const [filteredData, setFilteredData] = useState<Product[]>([]);
     const [valueSearch, setValueSearch] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(true); 
+    const [loading, setLoading] = useState<boolean>(true);
 
+    // Função para buscar produtos
     const fetchProducts = async () => {
-        setLoading(true); 
+        setLoading(true);
         const url = `${process.env.EXPO_PUBLIC_API_URL}/produto?empresa=${empresa?.id}`;
         const headers = { Authorization: `Bearer ${dataLogin?.token}` };
         await fetchDataGetProducts(url, { headers, method: 'GET' });
-        setLoading(false); 
+        setLoading(false);
     };
 
-    useFocusEffect( useCallback(() => { fetchProducts() }, [empresa, dataLogin]));
+    // Atualiza os produtos ao abrir a tela
+    useFocusEffect(
+        useCallback(() => {
+            fetchProducts();
+        }, [empresa, dataLogin])
+    );
 
+    // Atualiza os produtos e os dados filtrados quando a resposta é recebida
     useEffect(() => {
-        if (valueSearch.trim() === '') setFilteredData(items);
-        else {
+        if (responseGetProducts?.data?.products) {
+            const products = responseGetProducts.data.products;
+            setItems(products);
+            setFilteredData(products);
+        }
+    }, [responseGetProducts]);
+
+    // Filtra os dados com base na pesquisa
+    useEffect(() => {
+        if (valueSearch.trim() === '') {
+            setFilteredData(items);
+        } else {
             const lowercasedValue = valueSearch.toLowerCase();
-            const filtered = items.filter((item) => item.descricao.toLowerCase().includes(lowercasedValue));
+            const filtered = items.filter((item) =>
+                item.descricao.toLowerCase().includes(lowercasedValue)
+            );
             setFilteredData(filtered);
         }
     }, [valueSearch, items]);
 
-    useEffect(() => {  
-        if (responseGetProducts?.data?.products) {
-            setItems(responseGetProducts?.data?.products);
-            setFilteredData(responseGetProducts?.data?.products);
-        } 
-    })
-
+    // Renderiza o esqueleto enquanto os dados são carregados
     const renderSkeleton = () => (
         <View style={styles.skeletonCard}>
             <View style={styles.skeletonText} />
@@ -78,22 +87,22 @@ export const Products =  ({ navigation, route }: { navigation: any; route: any})
         </View>
     );
 
-
     return (
         <View style={styles.container}>
+            {/* Campo de busca */}
             <View style={styles.searchContainer}>
                 <Search
                     setValue={setValueSearch}
                     value={valueSearch}
-                    placeholder="Pesquisar"
-                    key="pesquisa"
-                    label="Categorias"
+                    placeholder="Pesquisar produtos"
+                    label="Produtos"
                 />
             </View>
 
+            {/* Lista de produtos ou skeleton */}
             {loading ? (
                 <FlatList
-                    data={Array(5).fill({})} 
+                    data={Array(5).fill({})}
                     keyExtractor={(_, index) => index.toString()}
                     contentContainerStyle={styles.contentContainer}
                     renderItem={renderSkeleton}
@@ -106,7 +115,7 @@ export const Products =  ({ navigation, route }: { navigation: any; route: any})
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             onPress={() =>
-                                navigation.navigate('DetailsProducts', { category: item })
+                                navigation.navigate('DetailsProducts', { product: item })
                             }
                         >
                             <CardCrud
@@ -124,6 +133,7 @@ export const Products =  ({ navigation, route }: { navigation: any; route: any})
                 />
             )}
 
+            {/* Botão de adicionar produto */}
             <Button
                 title="Adicionar"
                 icon="add"
@@ -131,19 +141,17 @@ export const Products =  ({ navigation, route }: { navigation: any; route: any})
             />
         </View>
     );
-
-}
+};
 
 const styles = StyleSheet.create({
     container: {
-        padding: 32,
+        padding: 16,
         backgroundColor: '#fff',
-        gap: 32,
         flex: 1,
     },
     searchContainer: {
-        width: '100%',
-        height: 100,
+        marginBottom: 16,
+        minHeight:120
     },
     contentContainer: {
         gap: 16,
