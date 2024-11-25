@@ -69,7 +69,7 @@ export const Stocks = ({ navigation }: { navigation: any }) => {
                 (stock) =>
                     stock.codigoBarras.toLowerCase().includes(lowercasedSearch) ||
                     stock.observacoes.toLowerCase().includes(lowercasedSearch) ||
-                    stock.produto.descricao.toLowerCase().includes(lowercasedSearch)
+                    stock.produto?.descricao.toLowerCase().includes(lowercasedSearch)
             );
             setFilteredStocks(filtered);
         }
@@ -100,7 +100,7 @@ export const Stocks = ({ navigation }: { navigation: any }) => {
             onPress={() => navigation.navigate('DetailsStock', { stock: item })}
         >
             <CardCrud
-                topLeft={`Produto: ${item.produto.descricao}`}
+                topLeft={`Produto: ${item.produto?.descricao}`}
                 bottomLeft={`Código de Barras: ${item.codigoBarras}`}
                 rightTop={`Quantidade: ${item.quantidade}`}
                 rightBottom={`Vencimento: ${new Date(item.dataVencimento).toLocaleDateString()}`}

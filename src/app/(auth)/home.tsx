@@ -24,7 +24,6 @@ type Lote = {
 
 export default function Home() {
     const { empresa, dataLogin, user } = useAuth();
-    if( true ) return
 
     const [responseLoteVencido, fetchDataLoteVencido] = useFetch<{
         arrExpiredLotes: Lote[];
