@@ -36,7 +36,7 @@ O **StockSense** utiliza tecnologias modernas para garantir **qualidade, perform
   
   [**Apresentação do projeto**](https://www.canva.com/design/DAGSR1ih9Z4/0Z7FxzxsfqroHTw3j-n0PQ/edit?utm_content=DAGSR1ih9Z4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton).
 
-  [**Demonstração do projeto**](https://www.youtube.com/playlist?list=PLn7QtM28o2Ykns6VefeRxA6WcfUFT-wkV)
+  [**Demonstração do projeto**](https://www.youtube.com/playlist?list=PLn7QtM28o2Ykns6VefeRxA6WcfUFT-wkV).
 
 ---
 
