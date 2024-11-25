@@ -1,50 +1,64 @@
-# Welcome to your Expo app 👋
+# **StockSense©** - _Solução Mobile para Gestão de Estoques_
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+---
 
-## Get started
+## **📋 Trabalho Final da Disciplina de Soluções Mobile**
 
-1. Install dependencies
+---
 
+## **📦 O que é o StockSense?**
+
+O **StockSense** é um software mobile inovador desenvolvido para **transformar a gestão de estoques**!  
+Com o **StockSense**, você pode:
+
+- 🕒 **Monitorar em tempo real**:  
+  Visualize os itens retirados, o saldo atual e os produtos próximos da data de vencimento.  
+
+- ✍️ **Cadastrar produtos, lotes e fornecedores**:  
+  Registre novos itens e lotes com simplicidade e rapidez.  
+
+- ✅ **Ter controle total da produção**:  
+  Administre todos os dados essenciais do estoque diretamente no seu dispositivo móvel.  
+
+---
+
+## **🛠️ Tecnologias Utilizadas**
+
+O **StockSense** utiliza tecnologias modernas para garantir **qualidade, performance** e **segurança** aos usuários.  
+
+- **📱 Mobile**:  
+  Desenvolvido com **React Native** e **Expo Router** para uma experiência ágil e responsiva.
+
+- **🌐 Backend**:  
+  Integração com uma **API REST**, permitindo persistência de dados e conexão com um frontend adicional que compartilha a mesma API.
+  
+  [**Acesse a documentação da API aqui**](https://cloudy-meadow-118088.postman.co/workspace/Stocksense~84f79344-5f09-4a7e-aa74-b5f4065bec9f/collection/24113981-d9e16e76-d2e1-458e-adb1-6202519aadf6?action=share&creator=24113981).
+  
+  [**Apresentação do projeto**](https://www.canva.com/design/DAGSR1ih9Z4/0Z7FxzxsfqroHTw3j-n0PQ/edit?utm_content=DAGSR1ih9Z4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton).
+
+---
+
+## **🚀 Como Rodar o Projeto?**
+
+Siga os passos abaixo para configurar e iniciar o projeto no seu ambiente local:
+
+1. **Instale as dependências**:  
+   Execute o comando abaixo no terminal para instalar todas as dependências do projeto:
    ```bash
-   npm install
+   npm i
    ```
-
-2. Start the app
-
+2. **Rode o projeto**:
+   
    ```bash
-    npx expo start
+   npx expo start
    ```
+**💡 Dica**: Certifique-se de ter o Node.js, npm e o Expo CLI instalados previamente no seu sistema.
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+**Desenvolvido por**:
+1. Guilherme Darabas
+2. Gustavo Goulart
+3. Kauã Machado
+4. Luiz Antônio Cardoso
+5. Tiago Bittencourt
