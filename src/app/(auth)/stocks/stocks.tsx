@@ -114,9 +114,11 @@ export const Stocks = ({ navigation }: { navigation: any }) => {
                 <Search
                     value={search}
                     setValue={setSearch}
-                    placeholder="Pesquisar por produto, código de barras ou observação"
+                    placeholder="Pesquisar"
+                    key="pesquisa"
+                    label="Lotes"
                 />
-            </View>
+            </View> 
 
             {loading ? (
                 <ActivityIndicator size="large" color="#000" />
@@ -143,12 +145,14 @@ export const Stocks = ({ navigation }: { navigation: any }) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        padding: 16,
+        padding: 32,
         backgroundColor: '#fff',
+        gap: 32,
+        flex: 1,
     },
     searchContainer: {
-        marginBottom: 16,
+        width: '100%',
+        height: 100,
     },
     listContainer: {
         gap: 16,
