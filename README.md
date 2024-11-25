@@ -44,12 +44,17 @@ O **StockSense** utiliza tecnologias modernas para garantir **qualidade, perform
 
 Siga os passos abaixo para configurar e iniciar o projeto no seu ambiente local:
 
-1. **Instale as dependências**:  
+1. **Crie um .env no root**:  
+   Crie um arquivo .env no root do projeto e informe o endpoint:
+   ```bash
+   EXPO_PUBLIC_API_URL=https://stock-sense.up.railway.app
+   ```
+2. **Instale as dependências**:  
    Execute o comando abaixo no terminal para instalar todas as dependências do projeto:
    ```bash
    npm i
    ```
-2. **Rode o projeto**:
+3. **Rode o projeto**:
    
    ```bash
    npx expo start
