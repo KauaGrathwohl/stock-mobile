@@ -59,6 +59,6 @@ Siga os passos abaixo para configurar e iniciar o projeto no seu ambiente local:
 **Desenvolvido por**:
 1. Guilherme Darabas
 2. Gustavo Goulart
-3. Kauã Machado
+3. Kauã Machado Grathwohl
 4. Luiz Antônio Cardoso
 5. Tiago Bittencourt
