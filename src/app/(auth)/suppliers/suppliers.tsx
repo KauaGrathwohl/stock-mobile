@@ -72,8 +72,6 @@ export const Suppliers = ({ navigation }: { navigation: any; route: any }) => {
             ]);
             setItems(suppliers);
             setFilteredData(suppliers);
-        } else {
-            console.error('Expected response.data.fornecedores to be an array');
         }
     }, [response.data]);
 
